@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<title>치매관리프로그램</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Script-Type" content="text/javascript" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<link rel="stylesheet" type="text/css" href="css/web/common.css" />
+	<link rel="stylesheet" type="text/css" href="css/web/base.css" />
+	<link rel="stylesheet" type="text/css" href="css/web/layout.css" />
+	<!-- [if IE]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- // jQuery 기본 js파일 -->
+	<!--[if gte IE 9]>
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery-3.5.1.min.js"></script>
+	<![endif]-->
+	<!--[if !IE]> -->
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery-3.5.1.min.js"></script>
+	<!-- <![endif]-->
+	<!-- // jQuery UI 라이브러리 js파일 -->
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery-ui.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery.form.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery.MultiFile.js"></script>
+
+	<script>
+		$(function() {
+			$('ul.tab li').click(function() {
+				var activeTab = $(this).attr('data-tab');
+				$('ul.tab li').removeClass('current');
+				$('.tabcontent').removeClass('current');
+				$(this).addClass('current');
+				$('#' + activeTab).addClass('current');
+			})
+		});
+	</script>
+</head>
+
+<body>
+	<div id="wrap">
+		<!-- 스킵네비 -->
+		<ul id="skipnav">
+			<li><a href="#conts">본문 바로가기</a></li>
+		</ul>
+		<!-- //스킵네비 -->
+
+		<div id="mid_wrap">
+			<!-- header S -->
+			<div id="header">
+				<div class="header_inner">
+					<h1>
+						<a href="">치매관리프로그램</a>
+					</h1>
+					<ul>
+						<li class="utmn01">운동담당[운동전문가]</li>								
+						<li class="utmn02"><a href="">사이트맵</a></li>
+						<li class="utmn03"><a href="">로그아웃</a></li>
+					</ul>
+				</div>
+				<div class="gmb_wid wid8"> <!-- 메뉴가 8개면 class="wid8" 추가해주세요 -->
+					<ul>
+						<li id=""><a href="" class="top_mn01 first">대상자 관리</a></li>
+						<li id=""><a href="" class="top_mn02">검사의뢰</a></li>
+						<li id=""><a href="" class="top_mn03">검사결과</a></li>
+						<li id=""><a href="" class="top_mn04 on">기관/관리자관리</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- header E -->
+
+			<div id="wrap_content">
+				
+				<div id="contents">
+					
+					<!-- search -->
+					<div class="schbox">
+						<ul>
+							<li>
+								<label for="sel01" style="width:auto">기관명:</label>
+								<select id="sel01">
+									<option value="">여기는남서울병원</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+								<label for="sel02" class="ml20">지료과:</label>
+								<select id="sel02">
+									<option value="">전체/신경과민성</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+								<label for="sel03" class="ml20">담당업무:</label>
+								<select id="sel03">
+									<option value="">전체/신경과민성</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</li>
+						</ul>
+						<a href="#" class="schbox_sch"><em class="btn_sch">조회</em></a>
+					</div>
+					<!-- search -->
+
+					<section class="mt35 section_div_set01">
+						<div>
+							<h2 class="mt8">기관목록</h2>
+							<table class="boardlist topb mt15">
+								<colgroup>
+									<col width="*%">
+									<col width="30%">
+									<col width="15%">
+									<col width="18%">
+								</colgroup>
+								<tbody>
+									<tr>			
+										<th scope="col">기관명</th>
+										<th scope="col">전화번호</th>
+										<th scope="col">사용자수</th>
+										<th scope="col">사용여부</th>
+									</tr>
+									<tr>
+										<td>여기는남서울병원</td>
+										<td>02-1111-2222</td>
+										<td>3</td>
+										<td>사용</td>
+									</tr>
+									<tr>
+										<td>여기는남서울병원</td>
+										<td>032-1111-2222</td>
+										<td>3</td>
+										<td>사용</td>
+									</tr>
+									<tr>
+										<td>여기는남서울병원</td>
+										<td>0707-1111-2222</td>
+										<td>3</td>
+										<td>사용</td>
+									</tr>
+									<tr>
+										<td>여기는남서울병원</td>
+										<td>02-1111-2222</td>
+										<td>3</td>
+										<td>미사용</td>
+									</tr>
+
+								</tbody>
+							</table>
+							<!-- Paginate -->
+							<div class="paginate">
+								 <a href="#" class="prev">이전</a>
+								 <a href="#">1</a>
+								 <a href="#">2</a>
+								 <strong>3</strong>
+								 <a href="#">4</a>
+								 <a href="#">5</a>
+								 <a href="#" class="next">다음</a>
+							</div>
+							<!-- //Paginate -->
+						</div>
+
+						<div>
+							<ul class="title_align">
+								<li><h2>대상자목록</h2></li>
+								<li><a href="#pop_new_input" class="btn_all">기관등록</a> <a href="#pop_text_in" class="btn_all">저장</a></li>
+							</ul>
+							<table class="table_type topb bg_grey">
+								<colgroup>
+									<col width="40%">
+									<col width="60%">
+								</colgroup>
+								<tbody>
+									<tr>			
+										<th scope="col">기관명</th>
+										<td><input type="text" class="" id=""/></td>
+									</tr>
+									<tr>
+										<th scope="col">주소</th>
+										<td><input type="text" class="" id=""/></td>
+									</tr>
+									<tr>
+										<th scope="col">전화번호</th>
+										<td><input type="text" class="" id=""/></td>
+									</tr>
+									<tr>
+										<th scope="col">사용여부</th>
+										<td>
+											<select id="">
+												<option value="">사용</option>
+												<option value="">미사용</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<th scope="col">등록일</th>
+										<td>2020-05-27</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</section>
+					
+					<section class="mt35">
+						<ul class="title_align">
+							<li><h2>사용자목록</h2></li>
+							<li><a href="#user_regist" class="btn_all new btn-layer">신규등록</a></li>
+						</ul>
+						<table class="boardlist topb">
+							<caption>검사결과목록</caption>
+							<colgroup>
+								<col width="*">
+								<col width="15%">
+								<col width="15%">
+								<col width="15%">
+								<col width="15%">
+								<col width="12%">
+							</colgroup>
+							<thead>
+								<tr>
+									<th scope="col">기관명</th>
+									<th scope="col">진료과</th>
+									<th scope="col">담당업무</th>
+									<th scope="col">사용자명</th>
+									<th scope="col">전화번호</th>
+									<th scope="col">등록일</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>여기는남서울병원</td>
+									<td>신경과</td>
+									<td>의사</td>
+									<td>룰루랄라</td>
+									<td>031-0000-1111</td>
+									<td>2020-05-27</td>
+								</tr>
+								<tr>
+									<td>여기는남서울병원</td>
+									<td>신경과</td>
+									<td>의사</td>
+									<td>룰루랄라</td>
+									<td>031-0000-1111</td>
+									<td>2020-05-27</td>
+								</tr>
+								<tr>
+									<td>여기는남서울병원</td>
+									<td>신경과</td>
+									<td>의사</td>
+									<td>룰루랄라</td>
+									<td>031-0000-1111</td>
+									<td>2020-05-27</td>
+								</tr>
+								<tr>
+									<td>여기는남서울병원</td>
+									<td>신경과</td>
+									<td>의사</td>
+									<td>룰루랄라</td>
+									<td>031-0000-1111</td>
+									<td>2020-05-27</td>
+								</tr>
+								<tr>
+									<td>여기는남서울병원</td>
+									<td>신경과</td>
+									<td>의사</td>
+									<td>룰루랄라</td>
+									<td>031-0000-1111</td>
+									<td>2020-05-27</td>
+								</tr>
+								<tr>
+									<td>여기는남서울병원</td>
+									<td>신경과</td>
+									<td>의사</td>
+									<td>룰루랄라</td>
+									<td>031-0000-1111</td>
+									<td>2020-05-27</td>
+								</tr>
+							</tbody>
+						</table>
+					</section>
+
+				</div>
+				<div id="footer">
+					<ul class="mn_footer">
+						<li>시스템 문의 02-6949-2000</li>
+						<li><a href="https://www.khealth.or.kr/board?menuId=MENU00944">개인정보처리방침</a></li>
+						<li><a href="http://www.khealth.or.kr:8090/mhcOpenAPI/">오픈API 지원사이트</a></li>
+						<li><address>&copy; Mobile HealthCare.</address></li>
+					</ul>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+	<!-- 사용자 신규 등록 -->
+	<div id="user_regist" class="layer-wrap">
+		<div class="pop-layer wid400">
+			<ul class="pop_title_ul_box">
+				<li><h2>사용자 신규 등록</h2></li>
+				<li>
+					<a href="#" class="btn-layerClose">Close</a>
+				</li>
+			</ul>
+			<div class="pop_input_box01">
+
+				<table class="table_type dis topb">
+					<colgroup>
+						<col width="40%">
+						<col width="60%">
+					</colgroup>
+					<tbody>
+						<tr>			
+							<th scope="col">기관명</th>
+							<td>여기는 남서울병원</td>
+						</tr>
+						<tr>			
+							<th scope="col">진료과</th>
+							<td>
+								<select id="">
+									<option value="">초음파</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</td>
+						</tr>
+						<tr>			
+							<th scope="col">담당업무</th>
+							<td>
+								<select id="">
+									<option value="">의사</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th scope="col">사용자명</th>
+							<td><input type="text" value="" id="" placeholder="사용자"></td>
+						</tr>
+						<tr>			
+							<th scope="col">사용여부</th>
+							<td>
+								<select id="">
+									<option value="">사용</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th scope="col">전화번호</th>
+							<td><input type="text" value="" id="" placeholder="000-0000-0000"></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div class="btncenter">
+					 <a href="#" class="btn_all">취소</a> <a href="" class="btn_all col01">등록</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- //사용자 신규 등록 -->
+
+	<!-- 사용자 정보 변경 -->
+	<div id="user_mod" class="layer-wrap">
+		<div class="pop-layer wid400">
+			<ul class="pop_title_ul_box">
+				<li><h2>사용자 신규 등록</h2></li>
+				<li>
+					<a href="#" class="btn-layerClose">Close</a>
+				</li>
+			</ul>
+			<div class="pop_input_box01">
+
+				<table class="table_type dis topb">
+					<colgroup>
+						<col width="40%">
+						<col width="60%">
+					</colgroup>
+					<tbody>
+						<tr>			
+							<th scope="col">기관명</th>
+							<td>여기는 남서울병원</td>
+						</tr>
+						<tr>			
+							<th scope="col">진료과</th>
+							<td>
+								<select id="">
+									<option value="">초음파</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</td>
+						</tr>
+						<tr>			
+							<th scope="col">담당업무</th>
+							<td>
+								<select id="">
+									<option value="">의사</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th scope="col">사용자명</th>
+							<td><input type="text" value="룰루랄라" id="" placeholder=""></td>
+						</tr>
+						<tr>			
+							<th scope="col">사용여부</th>
+							<td>
+								<select id="">
+									<option value="">사용</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th scope="col">전화번호</th>
+							<td><input type="text" value="02-1234-5678" id="" placeholder=""></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div class="btncenter">
+					 <a href="#" class="btn_all">취소</a> <a href="" class="btn_all col01">저장</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- //사용자 정보 변경 -->
+
+	<!-- 팝업화면 -->
+	<script type="text/javascript">
+		$('.btn-layer').on('click', function () {
+		  var target = $(this).attr('href');
+		  $(target).fadeIn();
+		});
+		$('.btn-layerClose').on('click', function () {
+		  $('.layer-wrap').fadeOut();
+		});
+	</script>
+</body>
+</html>

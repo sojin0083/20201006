@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="alExam.web.sv.TrgterExamMReport">
+    
+    <select id="getTrgterMExamInfo" resultType="java.util.Map">
+        /*
+			query id : alExam.web.sv.TrgterExamMReport.getTrgterMExamInfo
+			description : MMSE-DS 검사 결과지 대상자정보 조회
+		*/
+		SELECT 
+			 FN_GET_SCLAS_NM('CM009', T4.ORG_PART) AS ORG_PART_NM
+			,T3.NAME
+			,T3.R_NUMBER
+			,T3.C_NUMBER
+			,to_char(to_date(T3.BIRTH, 'YYYYMMDD'), 'YYYY-MM-DD') as BIRTH
+			,T3.AGE
+			,T3.GENDER
+			,T3.EDU_CD
+			,T3.EDU_STTUS
+			,T3.EDU_YEAR
+			,T3.HAND_CD
+			,T3.INMATE_NAME
+			,T3.INMATE_YN
+			,T3.EXAM_SN
+			,to_char(to_date(T3.EXAM_CMP_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') as EXAM_CMP_DATE
+			,(SELECT S1.ORG_NM FROM TC_CM_ORG S1 WHERE T3.ORG_CD = S1.ORG_CD) AS ORG_NM
+			,(SELECT USER_NM FROM TN_CM_USER_INFO S2 WHERE S2.USER_ID = T3.EXAM_INS_ID) AS EXAM_INS_NM
+		FROM TN_CM_USER_INFO T4
+		INNER JOIN(SELECT 
+					 T2.*
+					,T1.EXAM_SN
+					,T1.ORG_CD
+					,T1.EXAM_INS_ID
+					,T1.EXAM_CMP_DATE
+					FROM TN_SV_EXAM_REQ T1
+					INNER JOIN(
+							SELECT 
+								 NAME
+								,R_NUMBER
+								,C_NUMBER
+								,BIRTH
+								,FN_CAL_AGE(R_NUMBER) AS AGE
+								,FN_GET_SCLAS_NM('CM002', GENDER) AS GENDER
+								,FN_GET_SCLAS_NM('CM004', EDU_CD) AS EDU_CD
+								,FN_GET_SCLAS_NM('CM005', EDU_STTUS) AS EDU_STTUS
+								,EDU_YEAR
+								,FN_GET_SCLAS_NM('CM003', HAND_CD) AS HAND_CD
+								,INMATE_NAME
+								,FN_GET_SCLAS_NM('CM006', INMATE_YN) AS INMATE_YN
+							FROM TN_CM_TRGTER_INFO
+							WHERE R_NUMBER = #{R_NUMBER}
+					)T2
+					ON T1.R_NUMBER = T2.R_NUMBER
+					WHERE T1.EXAM_NO = #{EXAM_NO}) T3
+		ON T3.EXAM_INS_ID = T4.USER_ID
+    </select>
+    
+    
+    <select id="getTrgterMExamReport" resultType="java.util.Map">
+        /*
+			query id : alExam.web.sv.TrgterExamMReport.getTrgterMExamReport
+			description : MMSE-DS 검사 결과지 검사 내용
+		*/
+		SELECT  
+			 T1.EXAM_ITEM_CD
+			,T1.EXAM_ITEM_CD_DTLS
+			,T1.POINT
+			,T2.TOT_POINT
+		FROM TN_SV_EXAM_RESULT T1
+		LEFT OUTER JOIN(
+						SELECT 
+							 TOT_POINT
+							,EXAM_NO
+						FROM TN_SV_EXAM_REQ
+						) T2
+		ON T1.EXAM_NO = T2.EXAM_NO
+		WHERE T1.EXAM_NO = #{EXAM_NO}
+		order by EXAM_ITEM_CD asc, TO_NUMBER(EXAM_ITEM_CD_DTLS) asc
+    </select>
+</mapper>
+
+
+

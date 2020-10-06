@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="alExam.web.sv.TrgterExamMResultDtls">
+    
+    <select id="examMResultDtls" resultType="java.util.Map">
+    	/*
+			query id : alExam.web.sv.TrgterExamMResultDtls.examMResultDtls
+			description : MMSE-DS 검사 결과지 검사 내용
+		*/
+		SELECT  
+			 T1.EXAM_ITEM_CD
+			,T1.EXAM_ITEM_CD_DTLS
+			,T1.POINT
+			,T2.TOT_POINT
+		FROM TN_SV_EXAM_RESULT T1
+		LEFT OUTER JOIN(
+						SELECT 
+							 TOT_POINT
+							,EXAM_NO
+						FROM TN_SV_EXAM_REQ
+						) T2
+		ON T1.EXAM_NO = T2.EXAM_NO
+		WHERE T1.EXAM_NO = #{EXAM_NO}
+		order by EXAM_ITEM_CD asc, TO_NUMBER(EXAM_ITEM_CD_DTLS) asc
+    </select>
+    
+    
+    <update id="updateMmsePoint">
+        /*
+			query id : alExam.web.sv.TrgterExamMResultDtls.updateMmsePoint
+			description : MMSE-DS 상세점수수정
+		*/
+		UPDATE TN_SV_EXAM_RESULT
+		SET POINT = #{POINT}
+		WHERE EXAM_NO = #{EXAM_NO}
+		AND EXAM_ITEM_CD = #{EXAM_ITEM_CD}
+		AND EXAM_ITEM_CD_DTLS = #{EXAM_ITEM_CD_DTLS}
+    </update>
+    
+        <update id="updateMmseTotPoint">
+        /*
+			query id : alExam.web.sv.TrgterExamMResultDtls.updateMmseTotPoint
+			description : MMSE-DS 총점수수정
+		*/
+		UPDATE TN_SV_EXAM_REQ
+		SET TOT_POINT = #{TOT_POINT}
+		WHERE EXAM_NO = #{EXAM_NO}
+    </update>
+    
+    <update id="insertMmseTotPoint">
+        /*
+			query id : alExam.web.sv.TrgterExamMResultDtls.insertMmseTotPoint
+			description : MMSE-DS 총 점수 입력
+		*/
+		UPDATE TN_SV_EXAM_REQ
+		SET TOT_POINT = #{TOT_POINT}
+			, EXAM_CMP_DATE = DECODE(EXAM_REQ_DATE,NULL,'',			
+				   SUBSTR(EXAM_REQ_DATE,1,4)||
+				   SUBSTR(EXAM_REQ_DATE,5,2)||
+				   SUBSTR(EXAM_REQ_DATE,7,2))    
+		WHERE EXAM_NO = #{EXAM_NO}
+    </update>
+    
+    <insert id="insertMmsePoint">
+    			   /*
+			query id : alExam.web.sv.TrgterExamMResultDtls.insertPoint
+			description : 세부항목 점수 입력
+	 	   */	
+			INSERT INTO TN_SV_EXAM_RESULT
+				(	EXAM_NO
+					,R_NUMBER
+					,EXAM_ITEM_CD
+					,EXAM_ITEM_NO
+					,EXAM_ITEM_CD_DTLS
+					,POINT
+					,REG_DML_DT
+					,REG_DML_ID
+					,LST_DML_DT
+					,LST_DML_ID
+					,RMK
+				)
+				VALUES
+					(	 #{EXAM_NO				,	jdbcType=VARCHAR}
+						,#{R_NUMBER				,	jdbcType=VARCHAR}
+						,#{EXAM_ITEM_CD			,	jdbcType=VARCHAR}
+						,#{EXAM_ITEM_NO			,	jdbcType=VARCHAR}
+						,#{EXAM_ITEM_CD_DTLS	,	jdbcType=VARCHAR}
+						,#{POINT				,	jdbcType=INTEGER}
+						,SYSDATE
+						,#{SESS_USER_ID			,	jdbcType=VARCHAR}
+						,SYSDATE
+						,#{SESS_USER_ID			,	jdbcType=VARCHAR}
+						,#{RMK					,	jdbcType=VARCHAR}
+					)
+    </insert>
+    
+    	<update id="MSttsChange">
+    	   		   /*
+			query id : alExam.web.sv.trgterexamlresultinsert.MSttsChange
+			description : 진행상태 변경
+	 	   */	
+		UPDATE TN_SV_EXAM_REQ
+		SET EXAM_STTUS = '03'
+		WHERE EXAM_NO = #{EXAM_NO}
+	</update>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

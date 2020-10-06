@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="alExam.web.sv.trgterexamresult">
+
+	<select id="trgterResultList" resultType="java.util.Map">
+		   /*
+			query id : alExam.web.tg.trgterexamresult.trgterResultList
+			description : 대상자 검사결과 리스트 조회
+	 	  */
+	 	   SELECT R_NUMBER
+	 	   		, C_NUMBER
+	 	        , NAME
+	 	        , GENDER
+	 	        , AGE
+	 	        , EXAM_DIV
+	 	        , TOT_POINT
+	 	        , EXAM_CMP_DATE
+	 	        , EXAM_SN
+	 	        , EXAM_DIVV
+	 	        , EXAM_NO
+	 	FROM(        		
+			 SELECT T1.R_NUMBER																	AS R_NUMBER
+			 	  , T1.C_NUMBER																	AS C_NUMBER														
+			      , T1.NAME																		AS NAME
+			      , FN_GET_SCLAS_NM('CM002',T1.GENDER) 											AS GENDER
+			      , TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE),TO_DATE(BIRTH,'YYYYMMDD'))/12) 			AS AGE     
+			      , FN_GET_SCLAS_NM('SV001',T2.EXAM_DIV) 										AS EXAM_DIV
+			      ,	NVL(T2.EXAM_DIV,'')														   	AS EXAM_DIVV
+			      , T2.TOT_POINT																AS TOT_POINT
+			      , ROW_NUMBER() OVER(PARTITION BY T1.R_NUMBER ORDER BY T2.EXAM_SN DESC) 		AS ROWIDX
+			      , DECODE(T2.EXAM_CMP_DATE,NULL,' ',
+			        SUBSTR(T2.EXAM_CMP_DATE,1,4)||'-'||
+			        SUBSTR(T2.EXAM_CMP_DATE,5,2)||'-'||
+			        SUBSTR(T2.EXAM_CMP_DATE,7,2))												AS EXAM_CMP_DATE
+			      , T2.EXAM_SN																	AS EXAM_SN
+			      , T2.EXAM_NO																	AS EXAM_NO
+			   FROM TN_CM_TRGTER_INFO T1
+			       INNER JOIN TN_SV_EXAM_REQ T2
+			          ON T1.R_NUMBER = T2.R_NUMBER
+			       WHERE 1=1
+			         AND T2.EXAM_STTUS='03'
+			         AND T2.EXAM_CMP_DATE BETWEEN #{EXAM_BGN_DE, jdbcType=VARCHAR} AND #{EXAM_END_DE ,jdbcType=VARCHAR}
+			     <if test="EXAM_SN != null and !''.equals(EXAM_SN)">
+			 		 AND T2.EXAM_SN			=#{EXAM_SN			,		jdbcType=VARCHAR}         
+			      </if>
+	    	     <if test="GENDER != null and !''.equals(GENDER)">
+			 		 AND T1.GENDER			=#{GENDER			,		jdbcType=VARCHAR}         
+			      </if>
+			      <if test="EXAM_DIV != null and !''.equals(EXAM_DIV)">
+			         AND T2.EXAM_DIV 		=#{EXAM_DIV			,		jdbcType=VARCHAR}         
+			      </if>
+			       <if test="NAME != null and !''.equals(NAME)">
+			       	 AND (T1.NAME LIKE '%'||	#{NAME, jdbcType=VARCHAR}||'%'
+			       	  OR T1.C_NUMBER  LIKE '%'||	#{NAME, jdbcType=VARCHAR}||'%')
+			       </if>
+			        <if test="SESS_ORG_CD!='T001'">
+		     	    AND   T2.ORG_CD 	=#{SESS_ORG_CD}
+		     		</if>
+			       AND T2.EXAM_CMP_DATE IS NOT NULL
+				) WHERE 1=1
+				 <if test="YEAR != null and !''.equals(YEAR)">
+				   AND AGE BETWEEN #{YEAR} AND #{YEAR}+9
+				  </if>
+				 ORDER BY EXAM_CMP_DATE DESC,EXAM_SN DESC
+	</select>
+</mapper>	

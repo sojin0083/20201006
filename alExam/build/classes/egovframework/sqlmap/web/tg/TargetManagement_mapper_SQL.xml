@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="alExam.web.tg.TrgterInfoMngt">
+    
+	<select id="trgterList" resultType="java.util.Map">
+	    /*
+			query id : alExam.web.tg.TrgterInfoMngt.trgterList
+			description : 대상자관리 리스트 조회
+		*/
+		SELECT TO_CHAR(REG_DML_DT, 'YYYY-MM-DD') AS REG_DML_DT
+			  ,R_NUMBER
+			  ,C_NUMBER
+			  ,NAME
+			  ,FN_GET_SCLAS_NM('CM002', GENDER) AS GENDER
+			  ,BIRTH
+			  ,FN_CAL_AGE(R_NUMBER) AS AGE
+			  ,ORG_CD
+		   	  ,FN_GET_SCLAS_NM('SV001', EXAM_DIV) AS EXAM_DIV
+			  ,to_char(to_date(EXAM_CMP_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') as EXAM_CMP_DATE
+			  ,EXAM_SN
+			  ,PROC
+		FROM (
+			SELECT T1.REG_DML_DT
+				  ,T1.R_NUMBER
+				  ,T1.C_NUMBER
+				  ,T1.NAME
+			      ,T1.GENDER
+				  ,T1.BIRTH
+		       	  ,(select ORG_CD from TN_CM_USER_INFO where USER_ID = T1.REG_DML_ID) AS ORG_CD
+				  ,T2.EXAM_DIV
+			      ,T2.EXAM_CMP_DATE
+				  ,T2.EXAM_SN
+				  ,T5.PROC
+			  FROM TN_CM_TRGTER_INFO T1
+			  LEFT OUTER JOIN (
+					SELECT T3.R_NUMBER
+						  ,T3.EXAM_DIV
+						  ,T3.LST_DML_ID
+						  ,T3.EXAM_SN
+						  ,T3.EXAM_CMP_DATE
+					  FROM TN_SV_EXAM_REQ T3
+					 INNER JOIN(
+	          			SELECT R_NUMBER
+							  ,MAX(EXAM_CMP_DATE) EXAM_CMP_DATE
+						  FROM TN_SV_EXAM_REQ
+						 WHERE EXAM_STTUS = '03'
+						 GROUP BY R_NUMBER
+					 )T4
+					    ON T3.R_NUMBER = T4.R_NUMBER
+	        		   AND T3.EXAM_CMP_DATE = T4.EXAM_CMP_DATE
+			 ) T2
+			 ON T1.R_NUMBER = T2.R_NUMBER
+			 LEFT OUTER JOIN (
+				SELECT R_NUMBER
+					 , MIN(PROC) as PROC
+				  FROM (
+						SELECT R_NUMBER
+							 , CASE WHEN EXAM_STTUS = '01' then 'Y' else null end as PROC
+						  FROM TN_SV_EXAM_REQ
+			 )
+			 where PROC is not null
+			 group by PROC, R_NUMBER
+			 ) T5
+			 ON T1.R_NUMBER = T5.R_NUMBER
+		)
+		WHERE 1=1
+		<if test="SESS_ORG_CD != 'T001'">
+			AND ORG_CD = #{SESS_ORG_CD}
+		</if>
+		<if test="idValue !=null and !''.equals(idValue)">
+		    AND ((UPPER(NAME) LIKE UPPER('%' || #{idValue} || '%')
+		     OR C_NUMBER LIKE '%' || #{idValue} || '%'))
+		</if>
+		<if test="examSn !=null and !''.equals(examSn)">
+		    AND EXAM_SN = #{examSn}
+		</if>
+		<if test="gender !=null and !''.equals(gender)">
+		    AND GENDER = #{gender}
+		</if>
+		<if test="ageGroup !=null and !''.equals(ageGroup)">
+		    AND floor((FN_CAL_AGE(R_NUMBER)) / 10) * 10 = #{ageGroup}
+		</if>
+		<if test="sDate !=null and !''.equals(sDate)">
+		    <![CDATA[
+		    	AND (EXAM_CMP_DATE >= #{sDate}
+		    	 OR EXAM_CMP_DATE is null)
+		    ]]>
+		</if>
+		<if test="eDate !=null and !''.equals(eDate)">
+		    <![CDATA[
+		    	AND (EXAM_CMP_DATE <= #{eDate}
+		    	 OR EXAM_CMP_DATE is null)
+		    ]]>
+		</if>
+		ORDER BY REG_DML_DT DESC
+		<!-- ORDER BY NAME ASC -->
+		    
+	</select>
+	
+	
+	
+	<insert id="regTrgterInfo">
+	    /*
+			query id : alExam.web.tg.TrgterInfoMngt.regTrgterInfo
+			description : 신규대상자 등록
+		*/
+	    INSERT INTO TN_CM_TRGTER_INFO
+	    	(
+				 R_NUMBER
+				,C_NUMBER
+				,NAME
+				,BIRTH
+				,DIV_BIRTH
+				,GENDER
+				,HAND_CD
+				,EDU_YEAR
+				,INMATE_NAME
+				,INMATE_YN
+				,TEL_NO_1
+				,TEL_NO_2
+				,TEL_NO_3
+				,EMAIL
+				,INMATE_TEL_NO_1
+				,INMATE_TEL_NO_2
+				,INMATE_TEL_NO_3
+				,INMATE_EMAIL
+				,REG_DML_DT
+				,REG_DML_ID
+				,LST_DML_DT
+				,LST_DML_ID
+				,SIDO
+				,SIGUNGU
+				,BNAME
+				,ZIP_CD
+				,ADDR
+				,ADDR2
+			)
+		VALUES
+			(
+				 (SELECT NVL(LPAD(MAX(R_NUMBER)+1, 8, '0'), '00000001') FROM TN_CM_TRGTER_INFO)
+				<!-- ,(SELECT TO_CHAR(SYSDATE, 'YYYYMMDD')||NVL(LPAD(C_NUM,4,'0'), '0001') AS C_NUMBER
+					FROM 
+						(SELECT MAX(SUBSTR(C_NUMBER, 9, 4))+1 AS C_NUM
+						   FROM TN_CM_TRGTER_INFO
+						  WHERE TO_CHAR(SYSDATE, 'YYYYMMDD') = SUBSTR(C_NUMBER, 1, 8)
+						)
+				 ) -->
+				,#{cNumber, jdbcType=VARCHAR}
+				,#{trgterName, jdbcType=VARCHAR}
+				,#{trgterBirth}
+				,#{trgterDivBirth, jdbcType=VARCHAR}
+				,#{trgterGender, jdbcType=VARCHAR}
+				,#{trgterHandCd, jdbcType=VARCHAR}
+				,#{trgterEduYear, jdbcType=VARCHAR}
+				,#{trgterInmateName, jdbcType=VARCHAR}
+				,#{trgterInmateYn, jdbcType=VARCHAR}
+				,#{telNo1, jdbcType=VARCHAR}
+				,#{telNo2, jdbcType=VARCHAR}
+				,#{telNo3, jdbcType=VARCHAR}
+				,#{email, jdbcType=VARCHAR}
+				,#{inmateTelNo1, jdbcType=VARCHAR}
+				,#{inmateTelNo2, jdbcType=VARCHAR}
+				,#{inmateTelNo3, jdbcType=VARCHAR}
+				,#{inmateEmail, jdbcType=VARCHAR}
+				,sysdate
+				,#{SESS_USER_ID}
+				,sysdate
+				,#{SESS_USER_ID}
+				,#{sido, jdbcType=VARCHAR}
+				,#{sigungu, jdbcType=VARCHAR}
+				,#{bname, jdbcType=VARCHAR}
+				,#{zip_cd, jdbcType=VARCHAR}
+				,#{addr, jdbcType=VARCHAR}
+				,#{addr2, jdbcType=VARCHAR}
+			)
+	</insert>
+	
+	<select id="modTrgterInfoSet" parameterType="java.util.HashMap" resultType="java.util.Map">
+	    /*
+			query id : alExam.web.tg.TrgterInfoMngt.modTrgterInfoSet
+			description : 대상자 정보 조회
+		*/
+		SELECT
+			 R_NUMBER
+			,C_NUMBER
+			,NAME
+			,to_char(to_date(BIRTH, 'YYYYMMDD'), 'YYYY-MM-DD') as BIRTH
+			,FN_CAL_AGE(R_NUMBER) AS AGE
+			,DIV_BIRTH
+			,GENDER
+			,HAND_CD
+			,EDU_YEAR
+			,INMATE_NAME
+			,INMATE_YN
+			,EMAIL
+			,TEL_NO_1
+			,TEL_NO_2
+			,TEL_NO_3
+			,INMATE_TEL_NO_1
+			,INMATE_TEL_NO_2
+			,INMATE_TEL_NO_3
+			,INMATE_EMAIL
+			,REG_DML_DT
+			,REG_DML_ID
+			,LST_DML_DT
+			,SIDO
+			,SIGUNGU
+			,BNAME
+			,ZIP_CD
+			,ADDR
+			,ADDR2
+		FROM TN_CM_TRGTER_INFO
+		WHERE R_NUMBER = #{R_NUMBER}
+	</select>
+		
+	<update id="modTrgterInfo">
+	    /*
+			query id : alExam.web.tg.TrgterInfoMngt.modTrgterInfo
+			description : 대상자 정보 수정
+		*/
+	    UPDATE TN_CM_TRGTER_INFO
+	    SET  C_NUMBER = #{C_NUMBER} 
+	    	,BIRTH = #{trgterBirth}
+	    	,NAME = #{trgterName, jdbcType=VARCHAR}
+			,DIV_BIRTH = #{trgterDivBirth, jdbcType=VARCHAR}
+			,GENDER = #{trgterGender, jdbcType=VARCHAR}
+			,HAND_CD = #{trgterHandCd, jdbcType=VARCHAR}
+			,EDU_YEAR = #{trgterEduYear, jdbcType=VARCHAR}
+			,INMATE_NAME = #{trgterInmateName, jdbcType=VARCHAR}
+			,INMATE_YN = #{trgterInmateYn, jdbcType=VARCHAR}
+			,TEL_NO_1 = #{telNo1, jdbcType=VARCHAR}
+			,TEL_NO_2 = #{telNo2, jdbcType=VARCHAR}
+			,TEL_NO_3 = #{telNo3, jdbcType=VARCHAR}
+			,EMAIL = #{email, jdbcType=VARCHAR}
+			,INMATE_TEL_NO_1 = #{inmateTelNo1, jdbcType=VARCHAR}
+			,INMATE_TEL_NO_2 = #{inmateTelNo2, jdbcType=VARCHAR}
+			,INMATE_TEL_NO_3 = #{inmateTelNo3, jdbcType=VARCHAR}
+			,INMATE_EMAIL = #{inmateEmail, jdbcType=VARCHAR}
+			,LST_DML_DT = SYSDATE
+			,LST_DML_ID = #{SESS_USER_ID}
+			,SIDO = #{sido, jdbcType=VARCHAR}
+			,SIGUNGU = #{sigungu, jdbcType=VARCHAR}
+			,BNAME = #{bname, jdbcType=VARCHAR}
+			,ZIP_CD = #{zip_cd, jdbcType=VARCHAR}
+			,ADDR = #{addr, jdbcType=VARCHAR}
+			,ADDR2 = #{addr2, jdbcType=VARCHAR}
+	    WHERE R_NUMBER = #{R_NUMBER}
+	    
+	</update>
+	
+	
+	
+	<insert id="reqExam">
+	    /*
+			query id : alExam.web.tg.TrgterInfoMngt.reqExam
+			description : 검사의뢰
+		*/
+	    <foreach item="item" collection="trgterInfoList" index="index" open="INSERT ALL"  close="SELECT * FROM DUAL" separator=" " >
+		    INTO TN_SV_EXAM_REQ
+		    	(
+					 EXAM_NO
+					,R_NUMBER
+					,EXAM_DIV
+					,ORG_CD
+					,EXAM_REQ_DATE
+					,EXAM_STTUS
+					,EXAM_SN
+					,EXAM_REQ_ID
+					,EXAM_INS_ID
+					,MEMO
+					,REG_DML_DT
+					,REG_DML_ID
+					,LST_DML_DT
+					,LST_DML_ID
+				)
+			VALUES
+				(
+					 (SELECT NVL(MAX(to_number(EXAM_NO))+#{index}+1, '1') FROM TN_SV_EXAM_REQ)
+					,#{item.value}
+					,#{examDiv}
+					,#{examOrgCd}
+					,#{reqExamDate}
+					,'01'
+					,(SELECT NVL(MAX(EXAM_SN)+1,'1')
+					    FROM TN_SV_EXAM_REQ
+					   WHERE R_NUMBER = #{item.value}
+					     AND EXAM_DIV = #{examDiv})
+					,#{reqExamId}
+					,#{insExamId}
+					,#{memo}
+					,SYSDATE
+					,#{SESS_USER_ID}
+					,SYSDATE
+					,#{SESS_USER_ID}
+				)
+		</foreach>
+	</insert>
+	
+	<select id="selectInsExamInfo" parameterType="java.util.HashMap" resultType="java.util.Map">
+	    /*
+			query id : alExam.web.tg.TrgterInfoMngt.selectInsExamId
+			description : 검사자 정보 조회
+		*/
+		SELECT
+			 USER_ID
+			,USER_NM
+			,TEL_NO_1
+			,TEL_NO_2
+			,TEL_NO_3
+		FROM TN_CM_USER_INFO
+		<if test="SESS_ORG_CD != 'T001'">
+			WHERE ORG_CD = #{SESS_ORG_CD}
+		</if>
+	</select>
+	
+	<select id="modTrgterNumChk" parameterType="java.util.HashMap" resultType="java.util.Map">
+	    /*
+			query id : alExam.web.tg.TrgterInfoMngt.modTrgterInfoSet
+			description : 대상자 정보 조회
+		*/
+		SELECT NVL(MAX(T2.ORG_CD||T1.C_NUMBER), 'N') AS C_NUMBER_YN
+     	  FROM TN_CM_TRGTER_INFO T1
+     	  LEFT OUTER JOIN TN_CM_USER_INFO T2
+     		ON T1.REG_DML_ID = T2.USER_ID
+     	 WHERE T2.ORG_CD     = #{ORG_CD}
+     	   AND T1.C_NUMBER   = #{C_NUMBER}
+	</select>
+	
+	<select id="getCNum" parameterType="java.util.HashMap" resultType="java.util.Map">
+	    /*
+			query id : alExam.web.tg.TrgterInfoMngt.getCNum
+			description : 대상자등록시 기본 차트번호 불러오기
+		*/
+		SELECT NVL(LPAD(MAX(C_NUMBER)+1, 5, '0'), '00001') AS C_NUMBER
+		  FROM (SELECT C_NUMBER
+		          FROM TN_CM_TRGTER_INFO T1
+		         INNER JOIN TN_CM_USER_INFO T2
+            		ON T1.REG_DML_ID = T2.USER_ID
+            	 WHERE T2.ORG_CD    = #{ORG_CD}
+          		)
+	</select>
+</mapper>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<title>치매관리프로그램</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Script-Type" content="text/javascript" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<link rel="stylesheet" type="text/css" href="css/web/common.css" />
+	<link rel="stylesheet" type="text/css" href="css/web/base.css" />
+	<link rel="stylesheet" type="text/css" href="css/web/layout.css" />
+	<!-- [if IE]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- // jQuery 기본 js파일 -->
+	<!--[if gte IE 9]>
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery-3.5.1.min.js"></script>
+	<![endif]-->
+	<!--[if !IE]> -->
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery-3.5.1.min.js"></script>
+	<!-- <![endif]-->
+	<!-- // jQuery UI 라이브러리 js파일 -->
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery-ui.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery.form.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery.MultiFile.js"></script>
+
+	<script>
+		$(function() {
+			$('ul.tab li').click(function() {
+				var activeTab = $(this).attr('data-tab');
+				$('ul.tab li').removeClass('current');
+				$('.tabcontent').removeClass('current');
+				$(this).addClass('current');
+				$('#' + activeTab).addClass('current');
+			})
+		});
+	</script>
+</head>
+
+<body>
+	<div id="wrap">
+		<!-- 스킵네비 -->
+		<ul id="skipnav">
+			<li><a href="#conts">본문 바로가기</a></li>
+		</ul>
+		<!-- //스킵네비 -->
+
+		<div id="mid_wrap">
+			<!-- header S -->
+			<div id="header">
+				<div class="header_inner">
+					<h1>
+						<a href="">치매관리프로그램</a>
+					</h1>
+					<ul>
+						<li class="utmn01">운동담당[운동전문가]</li>								
+						<li class="utmn02"><a href="">사이트맵</a></li>
+						<li class="utmn03"><a href="">로그아웃</a></li>
+					</ul>
+				</div>
+				<div class="gmb_wid wid8"> <!-- 메뉴가 8개면 class="wid8" 추가해주세요 -->
+					<ul>
+						<li id=""><a href="" class="top_mn01 first on">대상자 관리</a></li>
+						<li id=""><a href="" class="top_mn02">검사의뢰</a></li>
+						<li id=""><a href="" class="top_mn03">검사결과</a></li>
+						<li id=""><a href="" class="top_mn04">기관/관리자관리</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- header E -->
+
+			<div id="wrap_content">
+				
+				<div id="contents">
+					
+					<!-- search -->
+					<div class="schbox">
+						<ul>
+							<li>
+								<label for="date01">검사일자:</label>
+								<input type="date" class="" id="date01"/> ~ <input type="date" class="" id="date02"/>
+								<label for="sel01" class="ml20">검사차수:</label>
+								<select id="sel01">
+									<option value="">전체1차검사차수</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</li>
+							<li>
+								<label for="name">이름(병록번호):</label>
+								<input type="text" class="" id="name"/>
+								<label for="sel02" class="ml20">성별:</label>
+								<select id="sel02">
+									<option value="">전체/남/여</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+								<label for="sel03" class="ml20">연령대:</label>
+								<select id="sel03">
+									<option value="">전체/60대</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</li>
+						</ul>
+						<a href="#" class="schbox_sch"><em class="btn_sch">조회</em></a>
+					</div>
+					<!-- search -->
+
+					
+					<section class="mt35">
+						<ul class="title_align">
+							<li><h2>대상자목록</h2></li>
+							<li><a href="#pop_new_input" class="btn_all new btn-layer">신규등록</a> <a href="#pop_text_in" class="btn_all test btn-layer">검사의뢰</a></li>
+						</ul>
+						<table class="boardlist topb">
+							<caption>검사결과목록</caption>
+							<colgroup>
+								<col width="5%">
+								<col width="12%">
+								<col width="*">
+								<col width="10%">
+								<col width="7%">
+								<col width="7%">
+								<col width="10%">
+								<col width="12%">
+								<col width="10%">
+							</colgroup>
+							<thead>
+								<tr>
+									<th><input type="checkbox" id="ck01" name="" class="ck_cmd board"/><label for="ck01"><span></span></label></th>
+									<th scope="col">검사일자</th>
+									<th scope="col">병록번호</th>
+									<th scope="col">이름</th>
+									<th scope="col">성별</th>
+									<th scope="col">나이</th>
+									<th scope="col">최종검사</th>
+									<th scope="col">최종검사일자</th>
+									<th scope="col">검사차수</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><input type="checkbox" id="ck02" name="" class="ck_cmd board"/><label for="ck02"><span></span></label></td>
+									<td>2020.05.11</td>
+									<td>2001082400001</td>
+									<td>울랄라</td>
+									<td>남</td>
+									<td>88</td>
+									<td>LICA</td>
+									<td>2020.05.11</td>
+									<td>1차</td>
+								</tr>
+								<tr>
+									<td><input type="checkbox" id="ck03" name="" class="ck_cmd board"/><label for="ck03"><span></span></label></td>
+									<td>2020.05.11</td>
+									<td>2001082400001</td>
+									<td>울랄라</td>
+									<td>남</td>
+									<td>88</td>
+									<td>LICA</td>
+									<td>2020.05.11</td>
+									<td>5차</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- Paginate -->
+						<div class="paginate">
+							 <a href="#" class="prev">이전</a>
+							 <a href="#">1</a>
+							 <a href="#">2</a>
+							 <strong>3</strong>
+							 <a href="#">4</a>
+							 <a href="#">5</a>
+							 <a href="#" class="next">다음</a>
+						</div>
+						<!-- //Paginate -->
+					</section>
+
+				</div>
+				<div id="footer">
+					<ul class="mn_footer">
+						<li>시스템 문의 02-6949-2000</li>
+						<li><a href="https://www.khealth.or.kr/board?menuId=MENU00944">개인정보처리방침</a></li>
+						<li><a href="http://www.khealth.or.kr:8090/mhcOpenAPI/">오픈API 지원사이트</a></li>
+						<li><address>&copy; Mobile HealthCare.</address></li>
+					</ul>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+	<!-- 대상자 인적사항 -->
+	<div id="pop_new_input" class="layer-wrap">
+		<div class="pop-layer">
+			<ul class="pop_title_ul_box">
+				<li><h2>대상자 인적사항</h2></li>
+				<li>
+					<a href="#" class="btn-layerClose">Close</a>
+				</li>
+			</ul>
+			<div class="pop_input_box01">
+
+				<table class="table_type dis topb">
+					<colgroup>
+						<col width="20%">
+						<col width="30%">
+						<col width="20%">
+						<col width="30%">
+
+					</colgroup>
+					<tbody>
+						<tr>			
+							<th scope="col">이름</th>
+							<td><input type="text" value="" id="" style="width:100%" placeholder="이름을 입력하세요."></td>
+							<th scope="col">병록번호</th>
+							<td><input type="text" value="" id="" style="width:100%" placeholder="병록번호를 입력하세요."></td>
+						</tr>
+						<tr>			
+							<th scope="col">생년월일</th>
+							<td colspan="3">
+								<ul>
+									<li><input type="date" value="" id="" style="width:150px"></li>
+									<li><input type="radio" name="select_d" id="ar1"><label for="ar1">양력</label> <input type="radio" name="select_d" id="ar2"><label for="ar2">음력</label></li>
+									<li>만 <input type="text" value="" id="" style="width:30px"> 세</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>			
+							<th scope="col">성별</th>
+							<td><input type="radio" name="select_s" id="m"><label for="m">남</label> <input type="radio" name="select_s" id="f"><label for="f">여</label></td>
+							<th scope="col">학력</th>
+							<td>
+								<select id="" style="width:48.5%">
+									<option value="">초등</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+								<select id="" style="width:48.5%">
+									<option value="">졸업</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</td>
+						</tr>
+						<tr>			
+							<th scope="col">손잡이</th>
+							<td><input type="radio" name="select_h" id="f"><label for="r">오른손</label> <input type="radio" name="select_h" id="l"><label for="l">왼손</label> <input type="radio" name="select_h" id="rl"><label for="rl">양손</label></td>
+							<th scope="col">교육년수</th>
+							<td>
+								<select id="" style="width:100%">
+									<option value="">20년</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</td>
+						</tr>
+						<tr>			
+							<th scope="col">보호자명</th>
+							<td><input type="text" value="" id="" style="width:100%" placeholder="보호자명을 입력하세요."></td>
+							<th scope="col">보호자동거여부</th>
+							<td><input type="radio" name="select_p" id="o"><label for="o">동거</label> <input type="radio" name="select_p" id="n"><label for="n">비동거</label></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div class="btncenter">
+					<a href="#pop_new_input" class="btn_all col01">수정</a> <a href="#" class="btn_all">취소</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- //대상자 인적사항 -->
+
+	<!-- 대상자 인적사항 수정 -->
+	<div id="pop_new_input_mod" class="layer-wrap">
+		<div class="pop-layer">
+			<ul class="pop_title_ul_box">
+				<li><h2>대상자 인적사항</h2></li>
+				<li>
+					<a href="#" class="btn-layerClose">Close</a>
+				</li>
+			</ul>
+			<div class="pop_input_box01">
+				<table class="table_type dis topb">
+					<colgroup>
+						<col width="20%">
+						<col width="30%">
+						<col width="20%">
+						<col width="30%">
+
+					</colgroup>
+					<tbody>
+						<tr>			
+							<th scope="col">이름</th>
+							<td><input type="text" value="홍길동" id="" style="width:100%" disabled></td>
+							<th scope="col">병록번호</th>
+							<td><input type="text" value="213423413423" id="" style="width:100%" disabled></td>
+						</tr>
+						<tr>			
+							<th scope="col">생년월일</th>
+							<td colspan="3">
+								<ul>
+									<li><input type="date" value="1874-05-23" id="" style="width:150px" disabled></li>
+									<li><input type="radio" name="select_d" id="ar1" checked disabled><label for="ar1">양력</label> <input type="radio" name="select_d" id="ar2" disabled><label for="ar2">음력</label></li>
+									<li>만 <input type="text" value="76" id="" style="width:30px" disabled> 세</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>			
+							<th scope="col">성별</th>
+							<td><input type="radio" name="select_s" id="m" disabled><label for="m">남</label> <input type="radio" name="select_s" id="f" checked disabled><label for="f">여</label></td>
+							<th scope="col">학력</th>
+							<td>
+								<select id="" style="width:48.5%" disabled>
+									<option value="">초등</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+								<select id="" style="width:48.5%" disabled>
+									<option value="">졸업</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</td>
+						</tr>
+						<tr>			
+							<th scope="col">손잡이</th>
+							<td><input type="radio" name="select_h" id="f" checked disabled><label for="r">오른손</label> <input type="radio" name="select_h" id="l" disabled><label for="l">왼손</label> <input type="radio" name="select_h" id="rl" disabled><label for="rl">양손</label></td>
+							<th scope="col">교육년수</th>
+							<td>
+								<select id="" style="width:100%" disabled>
+									<option value="">20년</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</td>
+						</tr>
+						<tr>			
+							<th scope="col">보호자명</th>
+							<td><input type="text" value="고길동" id="" style="width:100%" disabled></td>
+							<th scope="col">보호자동거여부</th>
+							<td><input type="radio" name="select_p" id="o" disabled><label for="o">동거</label> <input type="radio" name="select_p" id="n" checked disabled><label for="n">비동거</label></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div class="btncenter">
+					<a href="#pop_new_input" class="btn_all col01">수정</a> <a href="#" class="btn_all">취소</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- //대상자 인적사항 -->
+
+	<!-- 검사의뢰 -->
+	<div id="pop_text_in" class="layer-wrap">
+		<div class="pop-layer">
+			<ul class="pop_title_ul_box">
+				<li><h2>검사의뢰</h2></li>
+				<li>
+					<a href="#" class="btn-layerClose">Close</a>
+				</li>
+			</ul>
+			<div class="pop_input_box01">
+				<table class="table_type dis topb">
+					<colgroup>
+						<col width="20%">
+						<col width="30%">
+						<col width="20%">
+						<col width="30%">
+					</colgroup>
+					<tbody>
+						<tr>			
+							<th scope="col">검사종류</th>
+							<td colspan="3">
+								<select id="" style="width:100%">
+									<option value="">LICA 비문해 노인특성반영 인지기능검사</option>
+									<option value=""></option>
+									<option value=""></option>
+								</select>
+							</td>
+						</tr>
+						<tr>			
+							<th scope="col">검사기관</th>
+							<td><input type="text" value="000000병원" id="" style="width:100%"></td>
+							<th scope="col">검사의뢰자</th>
+							<td><input type="text" value="왕박사" id="" style="width:100%"></td>
+						</tr>
+						<tr>			
+							<th scope="col">검사일자</th>
+							<td>2020-05-19</td>
+							<th scope="col">검사자</th>
+							<td><input type="text" value="태박사" id="" style="width:100%"></td>
+						</tr>
+						<tr>			
+							<th scope="col">메모</th>
+							<td colspan="3"><textarea>오늘 검사 2명 의뢰합니다.</textarea></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div class="pop_group_box">
+					<span>홍길동 외 2명</span> 
+					<select id="">
+						<option value="">그룹없음</option>
+						<option value=""></option>
+						<option value=""></option>
+					</select>
+					<a href="#pop_new_input" class="btn_all">그룹추가</a>
+				</div>
+
+				<div class="btncenter">
+					<a href="#" class="btn_all">취소</a> <a href="#pop_new_input" class="btn_all col01">검사의뢰</a> 
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- //대상자 인적사항 -->
+
+
+	<!-- 팝업화면 -->
+	<script type="text/javascript">
+		$('.btn-layer').on('click', function () {
+		  var target = $(this).attr('href');
+		  $(target).fadeIn();
+		});
+		$('.btn-layerClose').on('click', function () {
+		  $('.layer-wrap').fadeOut();
+		});
+	</script>
+</body>
+</html>

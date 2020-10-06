@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="alExam.web.sm.usermngtregmngt">
+
+  	<select id="userMngtRegMngtList" resultType="java.util.Map">	 	
+	 	   /*
+			query id : alExam.web.sm.usermngtregmngt.userMngtRegMngtList
+			description : 기관/사용자관리 리스트 조회
+	 	   */
+		     SELECT T1.ORG_CD														AS ORG_CD
+			      , T1.ORG_NM														AS ORG_NM		
+			      , T1.ORG_TEL_NO_1||'-'||T1.ORG_TEL_NO_2||'-'||T1.ORG_TEL_NO_3		AS ORG_TEL
+			      , NVL(COUNT(T2.ORG_CD),'0')										AS USER_COUNT
+			      , CASE WHEN T1.USE_YN = 'Y' THEN '사용'
+	                   ELSE '미사용'
+	                         END                                                    AS USE_YN	
+	              , NVL(T1.USE_YN,'N')												AS USE_YN_YN
+			      , TO_CHAR(T1.REG_DML_DT,'YYYY-MM-DD')								AS REG_DML_DT
+			      , T1.ORG_TEL_NO_1													AS ORG_TEL_NO_1		
+			      , T1.ORG_TEL_NO_2													AS ORG_TEL_NO_2
+			      , T1.ORG_TEL_NO_3													AS ORG_TEL_NO_3
+			      , NVL(T1.ZIP_CD, ' ')												AS ZIP_CD
+			      , NVL(T1.FLOOR, ' ')												AS FLOOR
+			      , NVL(T1.ADDR, ' ')												AS ADDR
+			      , NVL(T1.ADDR2, ' ')												AS ADDR2
+			      , NVL(T1.SIDO, ' ')												AS SIDO
+			      , NVL(T1.SIGUNGU, ' ')											AS SIGUNGU
+			      , NVL(T1.BNAME, ' ')												AS BNAME	
+		       FROM TC_CM_ORG T1
+			   LEFT OUTER JOIN TN_CM_USER_INFO T2
+			    ON T1.ORG_CD = T2.ORG_CD
+			  WHERE 1=1
+		     <if test="SESS_ORG_CD!='T001'">
+		     	AND T1.ORG_CD =#{SESS_ORG_CD}
+		     </if>
+		     <if test="ORG_NM !=null and !''.equals(ORG_NM)">
+		         AND  (UPPER(T1.ORG_NM) LIKE UPPER('%' || #{ORG_NM} || '%'))  
+			 </if>
+		     GROUP BY T1.ORG_CD
+		            , T1.ORG_TEL_NO_1
+		            , T1.ORG_TEL_NO_2
+		            , T1.ORG_TEL_NO_3
+		            , T1.ORG_NM
+		            , T1.USE_YN
+		            , T1.ADDR
+		            , T1.REG_DML_DT
+		            , T1.ZIP_CD
+		            , T1.FLOOR
+		            , T1.ADDR2
+		            , T1.SIDO
+		            , T1.SIGUNGU
+		            , T1.BNAME
+		        ORDER BY T1.ORG_CD
+	</select> 	
+	<select id="selectOrgRegChk" resultType="java.util.Map">
+		   /*
+			query id : mhc.web.yt.youthSynFitEval.selectOrgRegChk
+			description : 기관 명 등록 여부 조회
+	 	   */
+			SELECT ORG_NM
+	  	      FROM TC_CM_ORG
+	 		   WHERE ORG_NM =#{ORG_NM  ,   jdbcType=VARCHAR}
+	</select> 	
+	
+	<update id="userMngtRegMngtRegUpd">
+		   /*
+			query id : alExam.web.sm.usermngtregmngt.userMngtRegMngtRegUpd
+			description : 기관 수정 
+	 	   */
+		 	 UPDATE TC_CM_ORG
+			    SET ORG_NM 			=#{ORG_NM       ,   jdbcType=VARCHAR}
+				  , ORG_TEL_NO_1	=#{ORG_TEL_NO_1 ,   jdbcType=VARCHAR}
+				  , ORG_TEL_NO_2	=#{ORG_TEL_NO_2 ,   jdbcType=VARCHAR}
+				  , ORG_TEL_NO_3	=#{ORG_TEL_NO_3 ,   jdbcType=VARCHAR}
+				  , USE_YN			=#{USE_YN	    ,   jdbcType=VARCHAR}
+				  , ADDR			=#{ADDR			,	jdbcType=VARCHAR}
+				  , ZIP_CD			=#{ZIP_CD		,	jdbcType=VARCHAR}
+				  , FLOOR			=#{FLOOR		,	jdbcType=VARCHAR}
+				  , ADDR2			=#{ADDR2		,	jdbcType=VARCHAR}
+				  , SIDO			=#{SIDO			,	jdbcType=VARCHAR}
+				  , SIGUNGU			=#{SIGUNGU		,	jdbcType=VARCHAR}
+				  , BNAME			=#{BNAME		,	jdbcType=VARCHAR}
+				  , LST_DML_DT  	= SYSDATE
+				  , LST_DML_ID 		=#{SESS_USER_ID ,   jdbcType=VARCHAR}
+			   WHERE ORG_CD 		=#{ORG_CD		,	jdbcType=VARCHAR}
+	</update>
+
+	<insert id="userMngtRegMngtRegInsert">
+		   /*
+			query id : alExam.web.sm.usermngtregmngt.userMngtRegMngtRegInsert
+			description : 기관 등록
+	 	   */
+	 	     INSERT INTO TC_CM_ORG
+			 	       ( ORG_CD
+			 	       , ORG_NM
+			 	       , ORG_TEL_NO_1
+			 	       , ORG_TEL_NO_2
+			 	       , ORG_TEL_NO_3
+			 	       , USE_YN
+			 	       , ADDR
+			 	       , REG_DML_DT
+			 	       , REG_DML_ID
+			 	       , LST_DML_DT
+			 	       , LST_DML_ID
+			 	       , ZIP_CD
+			 	       , FLOOR
+			 	       , ADDR2
+			 	       , SIDO
+			 	       , SIGUNGU
+			 	       , BNAME
+			 	       )
+			 	    VALUES
+			 	       ( ( SELECT 'H'||NVL(LPAD(MAX(SUBSTR(ORG_CD,2,4))+1,'3','0'),'001') FROM TC_CM_ORG)
+			 	         , #{ORG_NM			,	jdbcType=VARCHAR}
+			 	         , #{ORG_TEL_NO_1	,	jdbcType=VARCHAR}
+			 	         , #{ORG_TEL_NO_2	,	jdbcType=VARCHAR}
+			 	         , #{ORG_TEL_NO_3	,	jdbcType=VARCHAR}
+			 	         , #{USE_YN			,	jdbcType=VARCHAR}
+			 	         , #{ADDR			,	jdbcType=VARCHAR}
+			 	         , SYSDATE
+			 	         , #{SESS_USER_ID	,   jdbcType=VARCHAR}
+			 	         , SYSDATE
+			 	         , #{SESS_USER_ID	,   jdbcType=VARCHAR}
+			 	         , #{ZIP_CD			,	jdbcType=VARCHAR}
+			 	         , #{FLOOR			,	jdbcType=VARCHAR}
+			 	         , #{ADDR2			,	jdbcType=VARCHAR}
+			 	         , #{SIDO			,	jdbcType=VARCHAR}
+			 	         , #{SIGUNGU		,	jdbcType=VARCHAR}
+			 	         , #{BNAME			,	jdbcType=VARCHAR}
+			 	       )
+	</insert>
+	
+	<select id="orgMngtUserRegList" resultType="java.util.Map">
+		   /*
+			query id : alExam.web.sm.usermngtregmngt.orgMngtUserRegList
+			description : 기관 포함된 사용자 목록 조회
+	 	   */
+			SELECT T2.ORG_NM            							AS ORG_NM    
+		   	     , T1.USER_ID										AS USER_ID
+		         , T1.USER_NM										AS USER_NM
+		         , FN_GET_SCLAS_NM('CM002',T1.GENDER)				AS GENDER
+		         , DECODE(T1.BIRTH, NULL, ' ', 						
+		           SUBSTR(T1.BIRTH,1,4)||'-'||
+		           SUBSTR(T1.BIRTH,5,2)||'-'||
+		           SUBSTR(T1.BIRTH,7,2) ) 							AS BIRTH
+		         , T1.BIRTH											AS BIRTH_1
+		         , T1.ORG_CD										AS ORG_CD
+		         , FN_GET_SCLAS_NM('CM009',T1.ORG_PART) 			AS ORG_PART 
+		         , FN_GET_SCLAS_NM('CM010',T1.JOB_CLF) 				AS JOB_CLF
+		         , T1.TEL_NO_1||'-'||T1.TEL_NO_2||'-'||T1.TEL_NO_3	AS TEL_NO
+		         , NVL(T1.LOGIN_ID, ' ')							AS LOGIN_ID
+		         , CASE WHEN T1.USE_YN = 'Y' THEN '사용'
+	                   ELSE '미사용'
+	                   END                                          AS USE_YN	
+		         , T1.USE_YN										AS USE_YN_1
+		         , TO_CHAR(T1.REG_DML_DT,'YYYY-MM-DD')				AS REG_DML_DT
+		         , T1.ORG_PART									    AS ORG_PART_1
+		         , T1.JOB_CLF										AS JOB_CLF_1
+		         , T1.ORG_CD										AS ORG_CD
+			     FROM TN_CM_USER_INFO T1
+			     INNER JOIN TC_CM_ORG T2
+			         ON T1.ORG_CD = T2.ORG_CD
+			    WHERE 1=1
+			       AND	T2.USE_YN = 'Y'
+		        <if test="SESS_ORG_CD!='T001'">
+		     	   AND   T1.ORG_CD 	=#{SESS_ORG_CD}
+		     	</if>
+		     	<if test="ORG_CD !=null and !''.equals(ORG_CD)">
+		           AND  T1.ORG_CD		=#{ORG_CD}  
+		        </if>
+		        <if test="ORG_NM !=null and !''.equals(ORG_NM)">
+		           AND  (UPPER(T2.ORG_NM) LIKE UPPER('%' || #{ORG_NM} || '%'))  
+		        </if>
+		        <if test="JOB_CLF !=null and !''.equals(JOB_CLF)">
+		           AND  T1.JOB_CLF	=#{JOB_CLF		,	jdbcType=VARCHAR}
+		        </if>
+		        <if test="ORG_PART !=null and !''.equals(ORG_PART)">
+		           AND  T1.ORG_PART	=#{ORG_PART		,	jdbcType=VARCHAR}
+		        </if>
+		        ORDER BY T1.USE_YN
+	</select>
+	
+	<select id="userInfoSelect" resultType="java.util.Map">
+		   /*
+			query id : alExam.web.sm.usermngtregmngt.userInfoSelect
+			description : 사용자 목록 한명 조회
+	 	  */
+		 	SELECT T1.USER_ID										AS USER_ID
+	   		     , T1.USER_NM										AS USER_NM
+	             , T1.GENDER										AS GENDER
+	             , DECODE(T1.BIRTH, NULL, ' ', 						
+	               SUBSTR(T1.BIRTH,1,4)||'-'||
+		           SUBSTR(T1.BIRTH,5,2)||'-'||
+		           SUBSTR(T1.BIRTH,7,2) ) 							AS BIRTH
+	             , T1.ORG_PART										AS ORG_PART
+	             , T1.JOB_CLF										AS JOB_CLF
+	     		 , T1.TEL_NO_1										AS TEL_NO_1
+	     		 , T1.TEL_NO_2										AS TEL_NO_2
+	     		 , T1.TEL_NO_3										AS TEL_NO_3
+	     		 , T1.LOGIN_ID										AS LOGIN_ID
+	     		 , T1.PW											AS PW
+	     		 , T1.USE_YN										AS USE_YN
+	     		 , TO_CHAR(T1.REG_DML_DT,'YYYY-MM-DD')				AS REG_DML_DT
+	     		 , T2.ORG_NM										AS ORG_NM
+	     		 , T2.ORG_CD										AS ORG_CD
+	   		  FROM TN_CM_USER_INFO T1
+	          INNER JOIN TC_CM_ORG T2
+	    	     ON T1.ORG_CD=T2.ORG_CD
+	         WHERE T1.USER_ID	=#{USER_ID 		,   jdbcType=VARCHAR}
+	      	     AND T1.BIRTH=	#{BIRTH 	 	,   jdbcType=VARCHAR}
+	      	     AND T1.ORG_CD	=#{ORG_CD   	,   jdbcType=VARCHAR}
+	 </select>
+	 
+	 <insert id="UserRegUpd">
+		    /*
+			query id : alExam.web.sm.usermngtregmngt.UserRegUpd
+			description : 사용자 등록 및 수정
+	 	   */
+			MERGE INTO TN_CM_USER_INFO T1
+			   USING (
+	   					 SELECT #{USER_ID    ,   jdbcType=VARCHAR} AS USER_ID
+	   		     FROM DUAL
+	   						 )T2
+	  			ON (
+	    			   T1.USER_ID = T2.USER_ID 
+	     		 )
+	    	 WHEN MATCHED THEN
+		     UPDATE
+		       SET USER_NM  =#{USER_NM   ,   jdbcType=VARCHAR}
+		         , GENDER   =#{GENDER    ,   jdbcType=VARCHAR}
+		         , BIRTH    =#{BIRTH     ,   jdbcType=VARCHAR}
+		         , ORG_PART =#{ORG_PART  ,   jdbcType=VARCHAR}
+		         , JOB_CLF  =#{JOB_CLF   ,   jdbcType=VARCHAR}
+		         , TEL_NO_1 =#{TEL_NO_1  ,   jdbcType=VARCHAR}
+		         , TEL_NO_2 =#{TEL_NO_2  ,   jdbcType=VARCHAR}
+		         , TEL_NO_3 =#{TEL_NO_3  ,   jdbcType=VARCHAR}
+		         , LOGIN_ID =#{LOGIN_ID  ,   jdbcType=VARCHAR}
+		         , USE_YN   =#{USE_YN    ,   jdbcType=VARCHAR}
+		         , PW       =#{PW        ,   jdbcType=VARCHAR}
+		         , LST_DML_DT   =SYSDATE
+		         , LST_DML_ID   =#{SESS_USER_ID ,   jdbcType=VARCHAR}
+	         WHEN NOT MATCHED THEN
+		      INSERT
+		        ( ORG_CD
+		        , USER_ID
+		        , USER_NM
+		        , GENDER
+		        , BIRTH
+		        , ORG_PART
+		        , JOB_CLF
+		        , TEL_NO_1
+		        , TEL_NO_2
+		        , TEL_NO_3
+		        , LOGIN_ID
+		        , AUTH_CD
+		        , USE_YN
+		        , PW
+		        , REG_DML_DT
+		        , REG_DML_ID
+		        , LST_DML_DT
+		        , LST_DML_ID
+		        )
+		        VALUES
+		         ( #{ORG_CD	  		 ,   jdbcType=VARCHAR}
+		         , (SELECT NVL(LPAD(MAX(USER_ID)+1,'8','0'),'00000001') FROM TN_CM_USER_INFO)
+		         , #{USER_NM   		 ,   jdbcType=VARCHAR}
+		         , #{GENDER    		 ,   jdbcType=VARCHAR}
+		         , #{BIRTH     		 ,   jdbcType=VARCHAR}
+		         , #{ORG_PART  		 ,   jdbcType=VARCHAR}
+		         , #{JOB_CLF   		 ,   jdbcType=VARCHAR}
+		         , #{TEL_NO_1  		 ,   jdbcType=VARCHAR}
+		         , #{TEL_NO_2  		 ,   jdbcType=VARCHAR}
+		         , #{TEL_NO_3  		 ,   jdbcType=VARCHAR}
+		         , #{LOGIN_ID  		 ,   jdbcType=VARCHAR}
+		         , 'HLTH100'
+		         , #{USE_YN    		 ,   jdbcType=VARCHAR}
+		         , #{PW        		 ,   jdbcType=VARCHAR}
+		         , SYSDATE
+		         , #{SESS_USER_ID 	 ,   jdbcType=VARCHAR}
+		         , SYSDATE
+		         , #{SESS_USER_ID 	 ,   jdbcType=VARCHAR}
+		        )
+	 </insert>
+	 
+	 <insert id="UserManagerAuthUpd">
+	     MERGE INTO TN_CM_MANAGER_AUTH T1
+	     USING (SELECT #{USER_ID    ,   jdbcType=VARCHAR} AS USER_ID
+	   		      FROM DUAL
+	   		   )T2
+	  		ON (T1.USER_ID = T2.USER_ID)
+	      WHEN MATCHED THEN
+		UPDATE
+		   SET USE_YN  		 =#{USE_YN    	 ,   jdbcType=VARCHAR}
+		     , LST_DML_DT 	 =SYSDATE
+		     , LST_DML_ID 	 =#{SESS_USER_ID ,   jdbcType=VARCHAR}
+		  WHEN NOT MATCHED THEN
+		INSERT (
+					USER_ID
+				   ,AUTH_CD
+				   ,USE_YN
+				   ,REG_DML_DT
+				   ,REG_DML_ID
+				   ,LST_DML_DT
+				   ,LST_DML_ID
+				)VALUES(
+					(SELECT NVL(LPAD(MAX(USER_ID)+1,'8','0'),'00000001') FROM TN_CM_MANAGER_AUTH)
+			       ,'HLTH100'
+			       ,#{USE_YN       ,   jdbcType=VARCHAR}
+			       ,SYSDATE
+			       ,#{SESS_USER_ID ,   jdbcType=VARCHAR}
+			       ,SYSDATE
+			       ,#{SESS_USER_ID ,   jdbcType=VARCHAR}
+				)
+		   	   
+	     
+	 </insert>
+		
+	<select id="selectLoginRegChk" resultType="java.util.Map">
+		   /*
+			query id : mhc.web.yt.youthSynFitEval.selectLoginRegChk
+			description : 로그인 중복 체크 확인
+	 	  */
+	 		SELECT LOGIN_ID
+	 		  FROM TN_CM_USER_INFO
+	 		   WHERE LOGIN_ID=#{LOGIN_ID		,	jdbcType=VARCHAR} 
+	 </select>
+		
+	<select id="selectUserRegChk" resultType="java.util.Map">
+		   /*
+			query id : mhc.web.yt.youthSynFitEval.selectUserRegChk
+			description : 사용자 중복 체크
+	 	  */
+		   SELECT  NVL(COUNT(*),'0')     AS COUNT
+	 	    FROM TN_CM_USER_INFO
+		     WHERE USER_NM	=#{USER_NM  	,   jdbcType=VARCHAR}
+	  	       AND BIRTH 	=#{BIRTH    	,   jdbcType=VARCHAR}
+	    	   AND TEL_NO_1	=#{TEL_NO_1 	,   jdbcType=VARCHAR}
+	   	 	   AND TEL_NO_2	=#{TEL_NO_2 	,   jdbcType=VARCHAR}
+	   	 	   AND TEL_NO_3	=#{TEL_NO_3  	,   jdbcType=VARCHAR}
+	   	 	   AND ORG_CD   =#{ORG_CD		,	jdbcType=VARCHAR}
+ 	</select>
+ 	
+</mapper>

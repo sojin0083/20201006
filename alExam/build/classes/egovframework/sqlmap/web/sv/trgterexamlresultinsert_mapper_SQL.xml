@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="alExam.web.sv.trgterexamlresultinsert">
+
+	<select id="selectUserInfo" resultType="java.util.Map">
+		   /*
+			query id : alExam.web.sv.trgterexamlresult.selectUserInfo
+			description : 검사 대상자 인적사항 조회
+	 	  */
+			SELECT T1.R_NUMBER																	AS R_NUMBER
+			     , T1.NAME																		AS NAME
+			     , FN_GET_SCLAS_NM('CM002',T1.GENDER)      										AS GENDER
+			     , DECODE(T1.BIRTH,NULL,'',			
+			       SUBSTR(T1.BIRTH,1,4)||'-'||
+			       SUBSTR(T1.BIRTH,5,2)||'-'||
+			       SUBSTR(T1.BIRTH,7,2))       													AS BIRTH
+			     , TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE),TO_DATE(T1.BIRTH,'YYYYMMDD'))/12)||'세'   AS AGE
+			     , FN_GET_SCLAS_NM('CM004',T1.EDU_CD)          									AS EDU_CD	
+			     , FN_GET_SCLAS_NM('CM005',T1.EDU_STTUS)       									AS EDU_STTUS
+			     , T1.EDU_YEAR	                           										AS EDU_YEAR
+			     , FN_GET_SCLAS_NM('CM003',T1.HAND_CD)     										AS HAND_CD
+			     , T1.INMATE_NAME																AS INMATE_NAME
+			     , FN_GET_SCLAS_NM('CM006',T1.INMATE_YN)  										AS INMATE_YN
+			     , T2.ORG_CD																	AS ORG_CD
+			FROM TN_CM_TRGTER_INFO T1
+			  INNER JOIN TN_SV_EXAM_REQ T2
+			   ON T1.R_NUMBER= T2.R_NUMBER
+			   WHERE 1=1
+			     AND T1.R_NUMBER   =#{R_NUMBER			,	jdbcType=VARCHAR}
+			     AND T2.EXAM_SN    =#{EXAM_SN			,	jdbcType=VARCHAR}
+			    <if test="EXAM_DIV !=null and !''.equals(EXAM_DIV)">
+			     AND T2.EXAM_DIV    =#{EXAM_DIV			,	jdbcType=VARCHAR}
+			     </if>
+			     <if test="SESS_ORG_CD!='T001'">
+		     	 	AND   T2.ORG_CD 	=#{SESS_ORG_CD}
+		     	</if>
+	</select>
+	
+	<select id="selectExamCount" resultType="java.util.Map">
+	       /*
+			query id : alExam.web.sv.trgterexamlresultdtls.selectExamCount
+			description : 검사 대상자 검사 카운트 조회
+	 	  */	
+			SELECT COUNT(CASE WHEN EXAM_DIV ='L' THEN 1 END)||'건' 		 AS LINDA 
+				 , COUNT(CASE WHEN EXAM_DIV ='S' THEN 1 END)||'건' 		 AS S_LINDA 
+				 , COUNT(CASE WHEN EXAM_DIV ='M' THEN 1 END)||'건' 		 AS MMSE_DS 
+				FROM TN_CM_TRGTER_INFO T1
+       			  INNER JOIN TN_SV_EXAM_REQ T2
+      			    ON T1.R_NUMBER=T2.R_NUMBER
+      			     AND EXAM_STTUS='03'
+    			    WHERE T1.R_NUMBER=#{R_NUMBER	,	jdbcType=VARCHAR}	
+	</select>
+	
+	<select id="selectexamItemNm" resultType="java.util.Map">
+	       /*
+			query id : alExam.web.sv.trgterexamlresultdtls.selectexamItemNm
+			description : 검사정보 조회 하기
+	 	  */		
+	       SELECT DISTINCT EXAM_ITEM_NM 
+	           , TRIM(EXAM_ITEM_CD)		AS EXAM_ITEM_CD
+	           , TOT_SCORE
+	        FROM TN_CM_EXAM_ITEM_CD
+			 WHERE EXAM_ITEM_CD LIKE '%'||#{EXAM_DIV	,	jdbcType=VARCHAR}||'%'   
+              ORDER BY EXAM_ITEM_CD
+	</select>
+	
+	<select id="selectexamtotscore" resultType="java.util.Map">
+		   /*
+			query id : alExam.web.sv.trgterexamlresultdtls.selectexamtotscore
+			description : 검사정보 항목 점수 점수 조회
+	 	  */	
+			SELECT T1.EXAM_PROC_SN
+		   		 , T1.EXAM_ITEM_CD
+		   		 , NVL(SUM(POINT),'0')   AS POINT
+		    	 , T1.EXAM_ITEM_NO
+		    	 , T1.EXAM_ANSWR
+		     FROM TN_CM_EXAM_ITEM_CD_DTLS T1
+		      INNER JOIN TN_SV_EXAM_RESULT T2
+		         ON T1.EXAM_ITEM_CD=T2.EXAM_ITEM_CD
+    		 WHERE EXAM_NO=#{EXAM_NO		,	jdbcType=VARCHAR}
+    		   AND T1.EXAM_ITEM_CD_DTLS = T2.EXAM_ITEM_CD_DTLS
+    		   AND (T1.EXAM_ITEM_CD_DTLS,T1.EXAM_ITEM_CD) NOT IN (SELECT DISTINCT EXAM_ITEM_CD_DTLS ,EXAM_ITEM_CD
+    				  FROM TN_SV_EXAM_RESULT
+     			   WHERE  EXAM_ITEM_CD_DTLS IN('1101','1102','1103','1104','1105','1106','1107','2101','2102','2103','2104','2105','2106','2107')
+     			   AND EXAM_ITEM_CD='L05')
+   				GROUP BY T1.EXAM_PROC_SN,T1.EXAM_ITEM_CD,T1.EXAM_ITEM_NO,T1.EXAM_ANSWR
+    			ORDER BY T1.EXAM_ITEM_CD
+	</select>
+	
+	<select id="selectexamitemcddtlsnm" resultType="java.util.Map">
+		   /*
+			query id : alExam.web.sv.trgterexamlresultdtls.selectexamitemcddtlsnm
+			description : 검사정보 항목  맞는 이름 조회
+	 	  */	
+			SELECT EXAM_ITEM_CD_DTLS_NM 
+			 	 , NVL(EXAM_ANSWR,'1') 		AS EXAM_ANSWR
+			   FROM TN_CM_EXAM_ITEM_CD_DTLS
+				WHERE EXAM_ITEM_CD LIKE '%'||#{EXAM_DIV	,	jdbcType=VARCHAR} ||'%'
+			      AND EXAM_ITEM_CD_DTLS_NM IS NOT NULL
+			      AND NOT EXAM_ITEM_CD IN('L01','S01')
+			     ORDER BY EXAM_ITEM_CD
+	</select>
+	
+	<select id="selectexamitemcddtlspoint" resultType="java.util.Map">
+		   /*
+			query id : alExam.web.sv.trgterexamlresultdtls.selectexamitemcddtlspoint
+			description : 검사정보 항목  상세 포인트 조회
+		 	*/	
+			 SELECT T1.R_NUMBER
+			      , T1.EXAM_ITEM_CD
+			      , T2.EXAM_ITEM_CD_DTLS
+			      , T2.EXAM_ITEM_NO
+			      , T2.EXAM_PROC_SN
+			      , T1.EXAM_NO
+			      , T1.RMK
+			      , T2.EXAM_ANSWR		AS EXAM_ANSWR
+			      , NVL(T1.POINT,'')   AS POINT
+			 FROM TN_SV_EXAM_RESULT T1
+ 			  INNER JOIN TN_CM_EXAM_ITEM_CD_DTLS T2
+			     ON T1.EXAM_ITEM_CD_DTLS = T2.EXAM_ITEM_CD_DTLS
+			  INNER JOIN TN_SV_EXAM_REQ T3
+			     ON T1.EXAM_NO = T3.EXAM_NO
+		     WHERE T1.EXAM_NO= #{EXAM_NO             		 ,   jdbcType=VARCHAR}
+			   AND T1.R_NUMBER=#{R_NUMBER                  ,   jdbcType=VARCHAR}
+			   AND T1.EXAM_ITEM_CD = T2.EXAM_ITEM_CD
+			   AND T1.R_NUMBER=T3.R_NUMBER
+			   AND T3.EXAM_DIV=#{EXAM_DIV					 ,	 jdbcType=VARCHAR}
+			  ORDER BY T1.EXAM_ITEM_CD,T1.EXAM_ITEM_CD_DTLS
+		</select>
+	
+		<select id="selectExamHist" resultType="java.util.Map">
+			   /*
+				query id : alExam.web.sv.trgterexamlresultdtls.selectExamHist
+				description : 검사이력 리스트 조회
+		 	   */	
+				SELECT T1.EXAM_DIV 
+				     , DECODE(T1.EXAM_CMP_DATE,NULL,' ',
+			           SUBSTR(T1.EXAM_CMP_DATE,1,4)||'.'||
+			           SUBSTR(T1.EXAM_CMP_DATE,5,2)||'.'||
+			           SUBSTR(T1.EXAM_CMP_DATE,7,2))												AS EXAM_CMP_DATE
+				     , T1.EXAM_SN 
+				     , T1.TOT_POINT 
+				     , T1.EXAM_NO
+				     , T2.*
+				  FROM TN_SV_EXAM_REQ T1 
+				    RIGHT OUTER JOIN(
+				    		SELECT EXAM_NO 
+				    		     , R_NUMBER 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L01', POINT)),0) L01 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L02', POINT)),0) L02 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L03', POINT)),0) L03 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L04', POINT)),0) L04 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L05', POINT)),0) L05 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L06', POINT)),0) L06 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L07', POINT)),0) L07 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L08', POINT)),0) L08 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L09', POINT)),0) L09 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L10', POINT)),0) L10 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L11', POINT)),0) L11 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L12', POINT)),0) L12 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L13', POINT)),0) L13 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'L14', POINT)),0) L14 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'S01', POINT)),0) S01 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'S02', POINT)),0) S02 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'S03', POINT)),0) S03 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'S04', POINT)),0) S04 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'S05', POINT)),0) S05 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'S06', POINT)),0) S06 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'S07', POINT)),0) S07 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'S08', POINT)),0) S08 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'S09', POINT)),0) S09 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M01', POINT)),0) M01 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M02', POINT)),0) M02 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M03', POINT)),0) M03 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M04', POINT)),0) M04 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M05', POINT)),0) M05 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M06', POINT)),0) M06 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M07', POINT)),0) M07 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M08', POINT)),0) M08 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M09', POINT)),0) M09 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M10', POINT)),0) M10 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M11', POINT)),0) M11 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M12', POINT)),0) M12 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M13', POINT)),0) M13 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M14', POINT)),0) M14 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M15', POINT)),0) M15 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M16', POINT)),0) M16 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M17', POINT)),0) M17 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M18', POINT)),0) M18 
+				    		     , NVL(SUM(DECODE(EXAM_ITEM_CD, 'M19', POINT)),0) M19
+				    		   FROM TN_SV_EXAM_RESULT
+				    		    WHERE R_NUMBER = #{R_NUMBER		,	jdbcType=VARCHAR}
+				    		    AND (EXAM_ITEM_CD_DTLS,EXAM_ITEM_CD) NOT IN (SELECT DISTINCT EXAM_ITEM_CD_DTLS ,EXAM_ITEM_CD
+    								  FROM TN_SV_EXAM_RESULT
+     							      WHERE  EXAM_ITEM_CD_DTLS IN('1101','1102','1103','1104','1105','1106','1107','2101','2102','2103','2104','2105','2106','2107')
+     								  AND EXAM_ITEM_CD='L05')
+				    			 GROUP BY EXAM_NO, R_NUMBER )T2 ON T1.EXAM_NO = T2.EXAM_NO
+				    			    WHERE EXAM_DIV=#{EXAM_DIV	,	jdbcType=VARCHAR}
+							   ORDER BY TO_NUMBER(T2.EXAM_NO) DESC
+		</select>
+		
+   	<insert id="insertPoint">
+		   /*
+			query id : alExam.web.sv.trgterexamlresultinsert.trgterExamResultPointInsert
+			description : 세부항목 점수 입력
+	 	   */	
+			INSERT INTO TN_SV_EXAM_RESULT
+				(	EXAM_NO
+					,R_NUMBER
+					,EXAM_ITEM_CD
+					,EXAM_ITEM_NO
+					,EXAM_ITEM_CD_DTLS
+					,POINT
+					,REG_DML_DT
+					,REG_DML_ID
+					,LST_DML_DT
+					,LST_DML_ID
+					,RMK
+				)
+				VALUES
+					(	 #{EXAM_NO				,	jdbcType=VARCHAR}
+						,#{R_NUMBER				,	jdbcType=VARCHAR}
+						,#{EXAM_ITEM_CD			,	jdbcType=VARCHAR}
+						,#{EXAM_ITEM_NO			,	jdbcType=VARCHAR}
+						,#{EXAM_ITEM_CD_DTLS	,	jdbcType=VARCHAR}
+						,#{POINT				,	jdbcType=INTEGER}
+						,SYSDATE
+						,#{SESS_USER_ID			,	jdbcType=VARCHAR}
+						,SYSDATE
+						,#{SESS_USER_ID			,	jdbcType=VARCHAR}
+						,#{RMK					,	jdbcType=VARCHAR}
+					)
+	</insert> 
+
+		<update id="insertTotPoint">
+	 	   /*
+			query id : alExam.web.sv.trgterexamlresultinsert.insertTotPoint
+			description : 총  점수 입력
+	       */	
+			UPDATE TN_SV_EXAM_REQ
+				SET TOT_POINT	=#{TOT_POINT	,	jdbcType=INTEGER}
+				  , LST_DML_DT	=SYSDATE
+				  , LST_DML_ID=#{SESS_USER_ID   ,   jdbcType=VARCHAR}
+				  , EXAM_CMP_DATE = DECODE(EXAM_REQ_DATE,NULL,'',			
+				   SUBSTR(EXAM_REQ_DATE,1,4)||
+				   SUBSTR(EXAM_REQ_DATE,5,2)||
+				   SUBSTR(EXAM_REQ_DATE,7,2)) 
+				WHERE EXAM_NO =#{EXAM_NO        ,   jdbcType=VARCHAR}
+				 AND  R_NUMBER=#{R_NUMBER       ,   jdbcType=VARCHAR}	
+				 AND  EXAM_DIV=#{EXAM_DIV	    ,	jdbcType=VARCHAR}
+		</update>
+				
+	<select id="selectExamInfo" resultType="java.util.Map">
+	       /*
+			query id : alExam.web.sv.trgterexamlresultdtls.selectExamInfo
+			description : 검사정보 조회 
+	 	   */	
+			SELECT FN_GET_SCLAS_NM('SV003',T2.EXAM_DIV)     										  AS REQ_CD
+	     		 , T1.R_NUMBER																		  AS R_NUMBER
+	     		 , T1.C_NUMBER																		  AS C_NUMBER
+	    		 , DECODE(T2.EXAM_REQ_DATE,NULL,'',			
+				   SUBSTR(T2.EXAM_REQ_DATE,1,4)||'-'||
+				   SUBSTR(T2.EXAM_REQ_DATE,5,2)||'-'||
+				   SUBSTR(T2.EXAM_REQ_DATE,7,2))    												  AS EXAM_REQ_DATE
+			     , T2.EXAM_SN																	  	  AS EXAM_SN
+			     , T3.ORG_NM																		  AS ORG_NM
+			     , T4.USER_NM																		  AS REQ_INS_NM
+			     , NVL(T2.MEMO,' ')																	  AS MEMO
+			     , T2.TOT_POINT																		  AS TOT_POINT
+			     , (SELECT T2.USER_NM
+			            FROM TN_SV_EXAM_REQ T1
+			            INNER JOIN TN_CM_USER_INFO T2
+			               ON T1.EXAM_REQ_ID = T2.USER_ID
+			            WHERE T1.R_NUMBER   =#{R_NUMBER			,	jdbcType=VARCHAR}
+			              AND T1.EXAM_DIV	=#{EXAM_DIV			,	jdbcType=VARCHAR}
+			              AND T1.EXAM_SN    =#{EXAM_SN			,	jdbcType=VARCHAR})           	   AS REQ_NM
+			     , (SELECT FN_GET_SCLAS_NM('CM009',T2.ORG_PART) 
+			          	FROM TN_SV_EXAM_REQ T1
+			            INNER JOIN TN_CM_USER_INFO T2
+			               ON T1.EXAM_REQ_ID = T2.USER_ID
+			           WHERE T1.R_NUMBER =#{R_NUMBER			,	jdbcType=VARCHAR}
+			             AND T1.EXAM_DIV	=#{EXAM_DIV			,	jdbcType=VARCHAR}
+			             AND T1.EXAM_SN   =#{EXAM_SN			,	jdbcType=VARCHAR})          	    AS REQ_PART
+			     <if test='EXAM_SN != 1'>
+			     ,  NVL((SELECT TOT_POINT 
+			               FROM TN_SV_EXAM_REQ 
+			               WHERE R_NUMBER 	  =#{R_NUMBER		,	jdbcType=VARCHAR} 
+			                 AND  EXAM_DIV 	  =#{EXAM_DIV		,	jdbcType=VARCHAR}
+			                 AND EXAM_SN	  =#{EXAM_SN		,	jdbcType=VARCHAR}-1),'0')	 		AS PREV_POINT   
+			     </if>           
+			 FROM TN_CM_TRGTER_INFO T1
+			   INNER JOIN TN_SV_EXAM_REQ T2
+			      ON T1.R_NUMBER = T2.R_NUMBER
+			   LEFT OUTER JOIN TC_CM_ORG T3
+			      ON T2.ORG_CD = T3.ORG_CD
+			   INNER JOIN TN_CM_USER_INFO T4
+			      ON T2.EXAM_INS_ID = T4.USER_ID
+			  WHERE 1=1
+			    AND T1.R_NUMBER	=#{R_NUMBER			,	jdbcType=VARCHAR}
+			    AND T2.EXAM_SN  =#{EXAM_SN			,	jdbcType=VARCHAR}
+			    AND T2.EXAM_DIV	=#{EXAM_DIV			,	jdbcType=VARCHAR}
+	</select>
+	
+	<update id= "sttsChange">
+	 /*
+		query id : alExam.web.sv.trgterexamlresultinsert.sttsChange
+		description : 진행상태 변경
+	 */	
+		UPDATE TN_SV_EXAM_REQ
+		SET EXAM_STTUS = '03'
+		WHERE EXAM_NO = #{EXAM_NO}
+		</update>
+</mapper>

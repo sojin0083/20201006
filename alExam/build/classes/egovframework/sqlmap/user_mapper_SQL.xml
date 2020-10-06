@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="common.user">
+    
+    
+    <select id="selectLoginfirstChk" resultType="java.util.HashMap">
+		/*
+			query id : common.user.selectLoginfirstChk
+			description : 사용여부및 로그인 ID존재유무 확인
+		 */
+		SELECT T1.USER_ID
+			 , T1.USE_YN
+       		 , T2.USE_YN as ORG_USE_YN
+		  FROM TN_CM_USER_INFO T1
+		 INNER JOIN TC_CM_ORG T2
+		    ON T1.ORG_CD = T2.ORG_CD
+		 WHERE T1.LOGIN_ID = #{loginId}
+	</select>
+    
+	<select id="selectLoginInfoChk" resultType="java.util.HashMap">
+		/*
+			query id : common.user.checkLoginUser
+			description : 로그인 정보 체크
+		 */
+		SELECT T1.USER_ID
+		  FROM TN_CM_USER_INFO T1
+		 INNER JOIN TC_CM_ORG T2
+		     ON T1.ORG_CD = T2.ORG_CD
+		 WHERE T1.USE_YN = 'Y'
+		    AND T2.USE_YN = 'Y'
+		    AND T1.LOGIN_ID = #{loginId}
+		    AND T1.PW       = #{loginPwd}
+	</select>
+    
+	<select id="selectUserInfo" resultType="java.util.HashMap">
+		/*
+			query id : common.user.selectUserInfo
+			description : 사용자 정보 조회
+		 */
+		SELECT T1.USER_ID
+		     , T1.USER_NM
+		     , T1.GENDER
+		     , T1.ORG_CD
+		     , T2.ORG_NM
+		     , T1.AUTH_CD
+		     , T1.ORG_PART
+		     , FN_GET_SCLAS_NM('CM009', T1.ORG_PART) AS ORG_PART_NM
+		     , T1.JOB_CLF
+		     , FN_GET_SCLAS_NM('CM010', T1.JOB_CLF) AS JOB_CLF_NM     
+		  FROM TN_CM_USER_INFO T1
+		 INNER JOIN TC_CM_ORG T2
+		    ON T1.ORG_CD = T2.ORG_CD
+		 WHERE T1.USE_YN = 'Y'
+		   AND T2.USE_YN = 'Y'
+		   AND T1.LOGIN_ID  = #{loginId}	
+	</select>
+		
+</mapper>

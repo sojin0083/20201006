@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<title>치매관리프로그램</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Script-Type" content="text/javascript" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<link rel="stylesheet" type="text/css" href="css/web/common.css" />
+	<link rel="stylesheet" type="text/css" href="css/web/base.css" />
+	<link rel="stylesheet" type="text/css" href="css/web/layout.css" />
+	<link rel="stylesheet" type="text/css" href="css/web/print.css" />
+	<!-- [if IE]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- // jQuery 기본 js파일 -->
+	<!--[if gte IE 9]>
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery-3.5.1.min.js"></script>
+	<![endif]-->
+	<!--[if !IE]> -->
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery-3.5.1.min.js"></script>
+	<!-- <![endif]-->
+	<!-- // jQuery UI 라이브러리 js파일 -->
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery-ui.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery.form.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/jquery/jquery.MultiFile.js"></script>
+
+	<script>
+		$(function() {
+			$('ul.tab li').click(function() {
+				var activeTab = $(this).attr('data-tab');
+				$('ul.tab li').removeClass('current');
+				$('.tabcontent').removeClass('current');
+				$(this).addClass('current');
+				$('#' + activeTab).addClass('current');
+			})
+		});
+	</script>
+
+	<style>
+		* {box-sizing: border-box;-moz-box-sizing: border-box;-ms-box-sizing: border-box;-webkit-box-sizing: border-box;}
+	</style>
+</head>
+
+<body>
+	<div class="page">
+		<div class="subpage">
+			<section>
+				<ul class="title_align">
+					<li><h1>LICA 검사 결과지(비문해 노인 특성반영 인지기능검사)</h1></li>
+					<li><a href="" class="btn_all blue btn_print">인쇄</a></li>
+				</ul>
+				<table class="table_type print topb mt15">
+					<colgroup>
+						<col width="20%">
+						<col width="30%">
+						<col width="20%">
+						<col width="30%">
+
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="col">이름</th>
+							<td>홍길동</td>
+							<th scope="col">병록번호</th>
+							<td>4657494989</td>
+						</tr>
+						<tr>
+							<th scope="col">만 나이(생일)</th>
+							<td>만76세(양력 1900-05-23)</td>
+							<th scope="col">검사기관</th>
+							<td>만나이의원</td>
+						</tr>
+						<tr>
+							<th scope="col">성별</th>
+							<td>남/여</td>
+							<th scope="col">의뢰의(과)</th>
+							<td>신경과민과</td>
+						</tr>
+						<tr>
+							<th scope="col">학력(교육년수)</th>
+							<td>대학 이상(20)</td>
+							<th scope="col">검사일</th>
+							<td>2020-05-22</td>
+						</tr>
+						<tr>
+							<th scope="col">손잡이</th>
+							<td>왼손/오른손?</td>
+							<th scope="col">검사차수</th>
+							<td>1234차</td>
+						</tr>
+						<tr>
+							<th scope="col">보호자(동거여부)</th>
+							<td>선덕여왕(동거)</td>
+							<th scope="col">검사자</th>
+							<td>룰루랄라</td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+
+			<section class="mt35">
+				<h2>종합결과</h2>
+				<h3 class="mt10">-인지 영역 그래프</h3>
+				<div class="greap_board_box">
+					
+					<div class="graph_area lica">
+						<ul class="bar_graph_box">
+							<li>
+								<div class="title_value"><span>주의력</span><span>1.9(13.5/145)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_sky" style=""></div>
+											<div class="ri_g bg_blue" style=""></div>
+										</li>
+										<li>
+											<div class="le_g bg_sky" style="width:68%"></div>
+											<div class="le_g bg_blue" style="width:42%"></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<div class="title_value"><span>기역력</span><span>1.9(13/16)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_sky" style="width:38%"></div>
+											<div class="ri_g bg_blue" style="width:15%"></div>
+										</li>
+										<li>
+											<div class="le_g bg_sky" style=""></div>
+											<div class="le_g bg_blue" style=""></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<div class="title_value"><span>시공간구성력</span><span>1.9(13/16)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_sky" style="width:45%"></div>
+											<div class="ri_g bg_blue" style="width:54%"></div>
+										</li>
+										<li>
+											<div class="le_g bg_sky" style=""></div>
+											<div class="le_g bg_blue" style=""></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<div class="title_value"><span>언어능력</span><span>1.9(13/16)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_sky" style=""></div>
+											<div class="ri_g bg_blue" style=""></div>
+										</li>
+										<li>
+											<div class="le_g bg_sky" style="width:72%"></div>
+											<div class="le_g bg_blue" style="width:40%"></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<div class="title_value"><span>수행기능</span><span>1.9(13/16)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_sky" style="width:53%"></div>
+											<div class="ri_g bg_blue" style="width:29%"></div>
+										</li>
+										<li>
+											<div class="le_g bg_sky" style=""></div>
+											<div class="le_g bg_blue" style=""></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<div class="title_value"><span>계산력</span><span>1.9(13.5/145)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_blue" style=""></div>
+											<div class="ri_g bg_sky" style=""></div>
+										</li>
+										<li>
+											<div class="le_g bg_blue" style="width:63%"></div>
+											<div class="le_g bg_sky" style="width:42%"></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<div class="title_value"><span>총점</span><span>1.9(13/16)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_blue" style=""></div>
+											<div class="ri_g bg_sky" style=""></div>
+										</li>
+										<li>
+											<div class="le_g bg_blue" style="width:54%"></div>
+											<div class="le_g bg_sky" style="width:23%"></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+
+						</ul>
+
+						<ul class="number">
+							<li><span></span><span>-3</span></li>
+							<li><span></span><span>-2</span></li>
+							<li><span></span><span>-1</span></li>
+							<li><span></span><span>0</span></li>
+							<li><span></span><span>1</span></li>
+							<li><span></span><span>2</span></li>
+							<li><span></span><span>3</span></li>
+						</ul>
+					</div>
+
+					<div class="symbol_color">
+						<ul>
+							<li>1차</li>
+							<li>2차</li>
+						</ul>
+					</div>
+
+				</div>
+			</section>
+		</div>
+	</div>
+
+	<div class="page">
+		<div class="subpage">
+			<section>
+				<h3>-인지 영역 그래프</h3>
+				<div class="greap_board_box">
+					
+					<div class="graph_area">
+						<ul class="bar_graph_box">
+							<li>
+								<div class="title_value"><span>이야기-측각회상</span><span>1.9(13/16)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_sky" style=""></div>
+											<div class="ri_g bg_blue" style=""></div>
+										</li>
+										<li>
+											<div class="le_g bg_sky" style="width:68%"></div>
+											<div class="le_g bg_blue" style="width:42%"></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<div class="title_value"><span>단어-츶각회상</span><span>1.9(13.5/145)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_sky" style="width:38%"></div>
+											<div class="ri_g bg_blue" style="width:15%"></div>
+										</li>
+										<li>
+											<div class="le_g bg_sky" style=""></div>
+											<div class="le_g bg_blue" style=""></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<div class="title_value"><span>이야기-지연회상</span><span>1.9(13/16)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_sky" style="width:45%"></div>
+											<div class="ri_g bg_blue" style="width:54%"></div>
+										</li>
+										<li>
+											<div class="le_g bg_sky" style=""></div>
+											<div class="le_g bg_blue" style=""></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<div class="title_value"><span>단어-지연회상</span><span>1.9(13/16)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_sky" style=""></div>
+											<div class="ri_g bg_blue" style=""></div>
+										</li>
+										<li>
+											<div class="le_g bg_sky" style="width:72%"></div>
+											<div class="le_g bg_blue" style="width:40%"></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<div class="title_value"><span>이야기-재인</span><span>1.9(13/16)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_sky" style="width:53%"></div>
+											<div class="ri_g bg_blue" style="width:29%"></div>
+										</li>
+										<li>
+											<div class="le_g bg_sky" style=""></div>
+											<div class="le_g bg_blue" style=""></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<div class="title_value"><span>단어-재인</span><span>1.9(13/16)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_blue" style=""></div>
+											<div class="ri_g bg_sky" style=""></div>
+										</li>
+										<li>
+											<div class="le_g bg_blue" style="width:63%"></div>
+											<div class="le_g bg_sky" style="width:42%"></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<div class="title_value"><span>시간-막대재인</span><span>1.75(264/300)</span></div>
+								<div class="stack_graph">
+									<ul>
+										<li>
+											<div class="ri_g bg_blue" style=""></div>
+											<div class="ri_g bg_sky" style=""></div>
+										</li>
+										<li>
+											<div class="le_g bg_blue" style="width:54%"></div>
+											<div class="le_g bg_sky" style="width:23%"></div>
+										</li>
+									</ul>
+								</div>
+							</li>
+
+						</ul>
+
+						<ul class="number">
+							<li><span></span><span>-3</span></li>
+							<li><span></span><span>-2</span></li>
+							<li><span></span><span>-1</span></li>
+							<li><span></span><span>0</span></li>
+							<li><span></span><span>1</span></li>
+							<li><span></span><span>2</span></li>
+							<li><span></span><span>3</span></li>
+						</ul>
+					</div>
+
+					<div class="symbol_color">
+						<ul>
+							<li>1차</li>
+							<li>2차</li>
+						</ul>
+					</div>
+
+				</div>
+			</section>
+
+			<section class="mt35">
+				<h3>-인지 영역 결과표</h3>
+				<table class="boardlist topb mt10">
+					<colgroup>
+						<col width="*">
+						<col width="23%">
+						<col width="23%">
+						<col width="23%">
+
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">인지영역</th>
+							<th scope="col">점수</th>
+							<th scope="col">실시된 총점/총점</th>
+							<th scope="col">Z점수</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td scope="row">주의력</td>
+							<td>13</td>
+							<td>16/16</td>
+							<td>1.9</td>
+						</tr>
+						<tr>
+							<td scope="row">기억력</td>
+							<td>13</td>
+							<td>16/16</td>
+							<td>1.9</td>
+						</tr>
+						<tr>
+							<td scope="row">시공간구성력</td>
+							<td>13</td>
+							<td>16/16</td>
+							<td>1.9</td>
+						</tr>
+						<tr>
+							<td scope="row">언어능력</td>
+							<td>13</td>
+							<td>16/16</td>
+							<td>1.9</td>
+						</tr>
+						<tr>
+							<td scope="row">수행기능</td>
+							<td>13</td>
+							<td>16/16</td>
+							<td>1.9</td>
+						</tr>
+						<tr>
+							<td scope="row">계산력</td>
+							<td>13</td>
+							<td>16/16</td>
+							<td>1.9</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th scope="row">총점</th>
+							<td>264.2</td>
+							<td>16/16</td>
+							<td>1.9</td>
+						</tr>
+					</tfoot>
+				</table>
+			</section>
+
+			<section class="mt35">
+				<h3>-평가 종합 소견</h3>
+				<textarea placeholder="종합 평가 소견 내용 작성" class="mt10"></textarea>
+			</section>
+
+			<div class="btnright mt10"><a href="" class="btn_all col01">저장</a></div>
+		</div>
+	</div>
+
+	<div class="page">
+		<div class="subpage">
+			<h2>세부 검사 결과표</h2>
+			<table class="table_type print topb mt15">
+				<colgroup>
+					<col width="20%">
+					<col width="*">
+					<col width="18%">
+					<col width="18%">
+					<col width="18%">
+				</colgroup>
+				<thead>
+					<tr>
+						<th scope="col">인지영역</th>
+						<th scope="col">검사</th>
+						<th scope="col">원점수</th>
+						<th scope="col">Z점수</th>
+						<th scope="col">총점산출용<br>변환점수</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="row" rowspan="3">주의력</th>
+						<th scope="colgroup" colspan="4">시공간주의력</th>
+					</tr>
+					<tr>
+						<td class="le_line">바로따라하기</td>
+						<td>7</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<td class="le_line">거꾸로따라하기</td>
+						<td>7</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<th scope="row" rowspan="10">기억력</th>
+						<th scope="colgroup" colspan="4">이야기회상</th>
+					</tr>
+					<tr>
+						<td class="le_line">즉각회상</td>
+						<td>7</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<td class="le_line">지연회상</td>
+						<td>7</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<td class="le_line">재인</td>
+						<td>7</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<th scope="colgroup" colspan="4" class="line">단어회상</th>
+					</tr>
+					<tr>
+						<td class="le_line">즉각회상<br>[시행1/시행2/시행3]</td>
+						<td>7<br>[9/9/10]</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<td class="le_line">지연회상</td>
+						<td>7</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<td class="le_line">재인[TP/TN]</td>
+						<td>7<br>[9/9]</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<th scope="colgroup" colspan="4" class="line">막대재인</th>
+					</tr>
+					<tr>
+						<td class="le_line">막대재인[TP/TN]</td>
+						<td>7<br>[9/9]</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<th scope="row">시공간구성력</th>
+						<td>막대구성</td>
+						<td>9.5</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<th scope="row" rowspan="2">언어능력</th>
+						<td>의미모양-색깔속성</td>
+						<td>7</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<td class="le_line">이름대기</td>
+						<td>71</td>
+						<td>-1.97**</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<th scope="row" rowspan="2">수행기능</th>
+						<td>숫자스트룹</td>
+						<td>23<br>[40/34/21]<br>[45/23/90]</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<td class="le_line">동물이름대기</td>
+						<td>71</td>
+						<td>-1.97**</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<th scope="row">계산력</th>
+						<td>계산총점</td>
+						<td>7<br>[2/34/6]</td>
+						<td>1.92</td>
+						<td>7</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="page">
+		<div class="subpage">
+			<h2>누적 검사 결과표</h2>
+			<table class="table_type print topb mt15">
+				<colgroup>
+					<col width="20%">
+					<col width="*%">
+					<col width="20%">
+					<col width="16%">
+					<col width="16%">
+				</colgroup>
+				<thead>
+					<tr>
+						<th scope="col">인지영역</th>
+						<th scope="col">검사(총점)</th>
+						<th scope="col">2020.05.25</th>
+						<th scope="col">&nbsp;</th>
+						<th scope="col">&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="row" rowspan="2">주의력</th>
+						<td class="le_line">바로따라하기(8)</td>
+						<td>7(1.34)</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td class="le_line">거꾸로따라하기(3)</td>
+						<td>7(1.34)</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<th scope="row" rowspan="7">기억력</th>
+						<td>이야기회상-즉각회상(23)</td>
+						<td>7(1.34)</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td class="le_line">이야기회상-지연회상(23)</td>
+						<td>7(1.34)</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td class="le_line">이야기회상-재인(23)</td>
+						<td>7(1.34)</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td class="le_line">단어회상-즉각회상(23)<br>[시행1/시행2/시행3]</td>
+						<td>7(1.34)<br>[9/9/3]</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td class="le_line">단어회상-지연회상(23)</td>
+						<td>7(1.34)</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td class="le_line">단어회상-재인[TP/TN]</td>
+						<td>7(1.34)</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td class="le_line">막대재인[TP/TN]</td>
+						<td>7(1.34)</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<th scope="row">시공간구성력</th>
+						<td>막대구성(23)</td>
+						<td>7(1.34)</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<th scope="row" rowspan="2">언어능력</th>
+						<td>의미모양-색깔속성(23)</td>
+						<td>7(1.34)</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td class="le_line">이름대기(23)</td>
+						<td>7(-1.34**)</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<th scope="row">수행기능</th>
+						<td>숫자스트룹(23)<br>[시행1:정답수/소요시간/오답수]<br>[시행1:정답수/소요시간/오답수]</td>
+						<td>23(1.34)<br>[40/34/10]<br>[94/82/35]</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<th scope="row">시공간구성력</th>
+						<td class="le_line">동물이름대기(0≤)</td>
+						<td>23(1.34)<br>[40/34/10]<br>[94/82/35]</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<th scope="row">계산력</th>
+						<td>계산총점(23)<br>[＋/－/×/÷]</td>
+						<td>23(1.34)<br>[6/6/6/6]</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</body>
+</html>

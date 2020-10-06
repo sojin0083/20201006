@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="common.cmmn">
+
+	<select id="selectCmmnCd" resultType="java.util.HashMap">
+		/*
+			query id : common.cmmn.selectCmmnCd
+			description : 공통_코드 조회
+		 */
+		SELECT T2.SCLAS_CD AS CMMN_CD
+		     , T2.SCLAS_NM AS CMMN_NM
+		  FROM TC_CM_CMMN_CD_LCLAS T1
+		     , TC_CM_CMMN_CD_SCLAS T2
+		 WHERE T1.LCLAS_CD = T2.LCLAS_CD
+		   AND T1.LCLAS_CD = #{CMMN_CD, jdbcType=VARCHAR}
+		<if test="CMMN_DTLS_CD != null and !''.equals(CMMN_DTLS_CD)">
+		   AND T2.SCLAS_CD = #{CMMN_DTLS_CD, jdbcType=VARCHAR}
+		</if>
+		   AND T1.USE_YN   = 'Y'
+		   AND T2.USE_YN   = 'Y'
+		 ORDER BY T1.LCLAS_CD, T2.SORT_ORD
+	</select>
+
+	<select id="selectLclasCd" resultType="java.util.HashMap">
+		/*
+			query id : common.cmmn.selectLclasCd
+			description : 공통_코드 대분류 조회
+		 */
+		SELECT LCLAS_CD AS CMMN_CD
+		     , LCLAS_NM AS CMMN_NM
+		  FROM TC_CM_CMMN_CD_LCLAS
+		 WHERE USE_YN   = 'Y'
+		<if test="CMMN_DTLS_CD != null and !''.equals(CMMN_DTLS_CD)">
+		   AND LCLAS_CD = #{CMMN_DTLS_CD, jdbcType=VARCHAR}
+		</if>
+		 ORDER BY LCLAS_CD
+	</select>
+	
+	<select id="selectAuthCd" resultType="java.util.HashMap">
+		/*
+			query id : common.cmmn.selectAuthCd
+			description : 공통_권한 조회
+		 */
+		SELECT AUTH_CD AS CMMN_CD
+		     , AUTH_NM AS CMMN_NM
+		  FROM TC_CM_AUTH
+		 WHERE USE_YN   = 'Y'
+		<if test="CMMN_DTLS_CD != null and !''.equals(CMMN_DTLS_CD)">
+		   AND AUTH_CD = #{CMMN_DTLS_CD, jdbcType=VARCHAR}
+		</if>
+		 ORDER BY AUTH_CD
+	</select>
+
+	
+	<!-- <select id="selectCmmnMenu" resultType="java.util.HashMap">
+		/*
+			query id : common.cmmn.selectCmmnMenu
+			description : 공통_메뉴 조회
+		 */
+	   	SELECT *
+	   	   FROM TC_CM_MENU
+	   	  WHERE USE_YN = 'Y'
+	   	  ORDER BY MENU_ORD
+	</select> -->
+	
+	<select id="selectCmmnMenu" resultType="java.util.HashMap">
+		/*
+			query id : common.cmmn.selectCmmnMenu
+			description : 공통_메뉴 조회
+		 */
+		SELECT T200.* 
+		  FROM TN_CM_MANAGER_AUTH T100
+		 INNER JOIN(
+					SELECT T1.*
+					     , T2.AUTH_CD
+					     , T2.AUTH_USE_YN
+				      FROM TC_CM_MENU T1
+				 	 INNER JOIN (
+							SELECT MENU_CD
+							     , AUTH_CD
+							     , USE_YN AS AUTH_USE_YN
+							  FROM TN_CM_MENU_AUTH
+							 WHERE USE_YN = 'Y'
+			               ) T2
+			            ON T1.MENU_CD = T2.MENU_CD
+		             WHERE T1.USE_YN = 'Y'
+		       ) T200
+		    ON T100.AUTH_CD = T200.AUTH_CD
+		 WHERE T100.USER_ID = #{SESS_USER_ID, jdbcType=VARCHAR}
+		 ORDER BY MENU_ORD
+	</select>
+	
+	<select id="selectCmmnMenuInfo" resultType="java.util.HashMap">
+		/*
+			query id : common.cmmn.selectCmmnMenuInfo
+			description : 공통_메뉴 조회
+		 */
+	   	SELECT *
+	   	  FROM TC_CM_MENU
+	   	WHERE USE_YN = 'Y'   
+	   	    AND MENU_CD = #{menuCd, jdbcType=VARCHAR}
+	</select>	
+   
+   	<select id="selectOrgCd" resultType="java.util.HashMap">
+		/*
+			query id : common.cmmn.selectOrgCd
+			description : 기관_코드 조회
+		 */
+		SELECT ORG_CD AS CMMN_CD
+		     , ORG_NM AS CMMN_NM
+		  FROM TC_CM_ORG
+		 WHERE USE_YN   = 'Y'
+		<if test="CMMN_DTLS_CD != null and !''.equals(CMMN_DTLS_CD)">
+		   AND ORG_CD = #{CMMN_DTLS_CD, jdbcType=VARCHAR}
+		</if>
+		 ORDER BY ORG_NM
+	</select>
+   
+   	<select id="selectTcSvScore" resultType="java.util.HashMap">
+		/*
+			query id : common.cmmn.selectTcSvScore
+			description : 변환_점수_코드_조회
+		 */
+	   	SELECT TRANS_CD AS CMMN_CD
+	   		 , TRANS_NM AS CMMN_NM
+	   	   FROM TC_SV_TRANS_SCORE
+	   	    WHERE USE_YN='Y'
+	   	   ORDER BY SORT_ORD
+	</select>
+   
+</mapper>

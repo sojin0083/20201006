@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="alExam.web.sv.TrgterExamSReport">
+    
+    <select id="getTrgterSExamInfo" resultType="java.util.Map">
+        /*
+			query id : alExam.web.sv.TrgterExamSReport.getTrgterSExamInfo
+			description : SLICA 검사 결과지 대상자정보 조회
+		*/
+		SELECT 
+			 FN_GET_SCLAS_NM('CM009', T4.ORG_PART) AS ORG_PART_NM
+			,T3.NAME
+			,T3.R_NUMBER
+			,T3.C_NUMBER
+			,to_char(to_date(T3.BIRTH, 'YYYYMMDD'), 'YYYY-MM-DD') as BIRTH
+			,T3.AGE
+			,T3.GENDER
+			,T3.EDU_CD
+			,T3.EDU_STTUS
+			,T3.EDU_YEAR
+			,T3.HAND_CD
+			,T3.INMATE_NAME
+			,T3.INMATE_YN
+			,T3.EXAM_SN
+			,T3.EXAM_OPIN
+			,to_char(to_date(T3.EXAM_CMP_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') as EXAM_CMP_DATE
+			,(SELECT S1.ORG_NM FROM TC_CM_ORG S1 WHERE T3.ORG_CD = S1.ORG_CD) AS ORG_NM
+			,(SELECT USER_NM FROM TN_CM_USER_INFO S2 WHERE S2.USER_ID = T3.EXAM_INS_ID) AS EXAM_INS_NM
+		FROM TN_CM_USER_INFO T4
+		INNER JOIN(SELECT 
+					 T2.*
+					,T1.EXAM_SN
+					,T1.ORG_CD
+					,T1.EXAM_INS_ID
+					,T1.EXAM_CMP_DATE
+					,T1.EXAM_OPIN
+					FROM TN_SV_EXAM_REQ T1
+					INNER JOIN(
+							SELECT 
+								 NAME
+								,R_NUMBER
+								,C_NUMBER
+								,BIRTH
+								,FN_CAL_AGE(R_NUMBER) AS AGE
+								,FN_GET_SCLAS_NM('CM002', GENDER) AS GENDER
+								,FN_GET_SCLAS_NM('CM004', EDU_CD) AS EDU_CD
+								,FN_GET_SCLAS_NM('CM005', EDU_STTUS) AS EDU_STTUS
+								,EDU_YEAR
+								,FN_GET_SCLAS_NM('CM003', HAND_CD) AS HAND_CD
+								,INMATE_NAME
+								,FN_GET_SCLAS_NM('CM006', INMATE_YN) AS INMATE_YN
+							FROM TN_CM_TRGTER_INFO
+							WHERE R_NUMBER = #{R_NUMBER}
+					)T2
+					ON T1.R_NUMBER = T2.R_NUMBER
+					WHERE T1.EXAM_NO = #{EXAM_NO}) T3
+		ON T3.EXAM_INS_ID = T4.USER_ID
+    </select>
+    
+    <select id="getTrgterSExamArea" resultType="java.util.Map">
+        /*
+			query id : alExam.web.sv.TrgterExamSReport.getTrgterSExamInfo
+			description : SLICA 검사 결과지 인지영역 결과표 조회
+		*/
+		SELECT T20.AREA
+		     , T20.AREA_NM
+		     , SUM(TRANS_GET_POINT)     AS TRANS_GET_POINT
+		     , SUM(TRANS_SCORE) ||'/'||SUM(TRANS_SCORE) AS TRANS_SCORE
+		     , ROUND(AVG(Z_POINT),2) AS Z_POINT
+		FROM (
+		SELECT T10.AREA
+		     , FN_GET_SCLAS_NM('SV006', T10.AREA) AS AREA_NM
+		     , T10.EXAM_ITEM_CD
+		     , T10.EXAM_ITEM_NM
+		     , T10.EXAM_KEY_WORD_FULL
+		     , T10.EXAM_ITEM_NO
+		     , MAX(T10.TRANS_SCORE) AS TRANS_SCORE
+		     , SUM(T10.POINT)       AS ORI_GET_POINT
+		     , FN_GET_SLICA_TRANS_POINT(T10.EXAM_ITEM_CD, SUM(T10.POINT)) AS TRANS_GET_POINT
+		     , EXAM_KEY_WORD_FULL
+		     , FN_GET_S_Z_POINT(T10.R_NUMBER, T10.EXAM_NO, T10.EXAM_ITEM_CD, T10.EXAM_ITEM_NO) AS Z_POINT  
+		  FROM (
+		        SELECT T3.EXAM_NO
+		             , T3.R_NUMBER
+		             , T1.EXAM_ITEM_CD
+		             , T1.EXAM_ITEM_NM
+		             , T1.EXAM_ITEM_NO
+		             , T1.AREA
+		             , T1.TRANS_SCORE
+		             , TOT_SCORE
+		             , T3.POINT
+		             , T1.EXAM_KEY_WORD_FULL
+		          FROM TN_CM_EXAM_ITEM_CD T1
+		         INNER JOIN TN_CM_EXAM_ITEM_CD_DTLS T2
+		            ON T1.EXAM_ITEM_CD = T2.EXAM_ITEM_CD
+		           AND T1.EXAM_ITEM_NO = T2.EXAM_ITEM_NO
+		         INNER JOIN TN_SV_EXAM_RESULT T3
+		            ON T2.EXAM_ITEM_CD = T3.EXAM_ITEM_CD
+		           AND T2.EXAM_ITEM_NO = T3.EXAM_ITEM_NO
+		           AND T2.EXAM_ITEM_CD_DTLS = T3.EXAM_ITEM_CD_DTLS
+		         WHERE EXAM_NO = #{EXAM_NO}
+		           AND T1.AREA IS NOT NULL
+		       )T10
+		  GROUP BY R_NUMBER, EXAM_NO, EXAM_ITEM_CD, EXAM_ITEM_NM, EXAM_ITEM_NO, AREA, EXAM_KEY_WORD_FULL
+		)T20
+		GROUP BY AREA, AREA_NM
+		ORDER BY AREA
+	</select>
+	
+    <update id="examOpin">
+	    /*
+			query id : alExam.web.sv.TrgterExamSReport.examOpin
+			description : 의견 작성
+		*/
+	    UPDATE TN_SV_EXAM_REQ
+	    SET  EXAM_OPIN = #{EXAM_OPIN}
+	    WHERE EXAM_NO = #{EXAM_NO}
+	    
+	</update>
+    
+	<select id="getTrgterSExamGrpO" resultType="java.util.Map">   
+	    /*
+			query id : alExam.web.sv.TrgterExamSReport.getTrgterSExamGrpO
+			description : SLICA 검사 결과지 인지영역 그래프
+		*/
+		SELECT AREA_NM AS AREA_NM
+		     , VAL
+		     , Z_POINT
+		     , Z_PER
+		     , Z_POINT_DIR
+		FROM (
+		SELECT T30.AREA_NM
+		     , T30.Z_POINT||'('||TRANS_GET_POINT||'/'||TRANS_POINT||')' AS VAL
+		     , Z_POINT
+		     , CASE WHEN ABS(ROUND((Z_POINT/3)*100, 1)) >= 100 THEN 100 ELSE ABS(ROUND((Z_POINT/3)*100, 1)) END AS Z_PER
+		     , CASE WHEN Z_POINT > 0 THEN 'R' ELSE 'L' END AS Z_POINT_DIR
+		     , ROW_NUMBER() OVER(ORDER BY AREA) AS RN
+		  FROM (
+		        SELECT T20.AREA
+		             , T20.AREA_NM
+		             , SUM(TRANS_GET_POINT) AS TRANS_GET_POINT          
+		             , SUM(TRANS_SCORE)     AS TRANS_POINT
+		             , RTRIM(TO_CHAR(ROUND(AVG(Z_POINT), 2), 'FM99990D999'), '.') AS Z_POINT
+		          FROM (
+		                SELECT T10.AREA
+		                     , T10.R_NUMBER
+		                     , T10.EXAM_NO
+		                     , FN_GET_SCLAS_NM('SV006', T10.AREA) AS AREA_NM
+		                     , T10.EXAM_ITEM_CD
+		                     , T10.EXAM_ITEM_NM
+		                     , T10.EXAM_KEY_WORD_FULL
+		                     , T10.EXAM_ITEM_NO
+		                     , MAX(T10.TRANS_SCORE) AS TRANS_SCORE
+		                     , SUM(T10.POINT)       AS ORI_GET_POINT
+		                     , FN_GET_SLICA_TRANS_POINT(T10.EXAM_ITEM_CD, SUM(T10.POINT)) AS TRANS_GET_POINT
+		                     , FN_GET_S_Z_POINT(T10.R_NUMBER, T10.EXAM_NO, T10.EXAM_ITEM_CD, T10.EXAM_ITEM_NO) AS Z_POINT     
+		                     , EXAM_KEY_WORD_FULL
+		                  FROM (
+		                        SELECT T3.EXAM_NO
+		                             , T3.R_NUMBER
+		                             , T1.EXAM_ITEM_CD
+		                             , T1.EXAM_ITEM_NM
+		                             , T1.EXAM_ITEM_NO
+		                             , T1.AREA
+		                             , T1.TRANS_SCORE
+		                             , TOT_SCORE
+		                             , CASE WHEN T2.RMK = 'NOTIN' THEN 0 ELSE T3.POINT END AS POINT
+		                             , T1.EXAM_KEY_WORD_FULL
+		                          FROM TN_CM_EXAM_ITEM_CD T1
+		                         INNER JOIN TN_CM_EXAM_ITEM_CD_DTLS T2
+		                            ON T1.EXAM_ITEM_CD = T2.EXAM_ITEM_CD
+		                           AND T1.EXAM_ITEM_NO = T2.EXAM_ITEM_NO
+		                         INNER JOIN TN_SV_EXAM_RESULT T3
+		                            ON T2.EXAM_ITEM_CD = T3.EXAM_ITEM_CD
+		                           AND T2.EXAM_ITEM_NO = T3.EXAM_ITEM_NO
+		                           AND T2.EXAM_ITEM_CD_DTLS = T3.EXAM_ITEM_CD_DTLS
+		                         WHERE EXAM_NO = #{EXAM_NO, jdbcType=VARCHAR}
+		                           AND T1.AREA IS NOT NULL
+		                       )T10
+		                  GROUP BY R_NUMBER, EXAM_NO, EXAM_ITEM_CD, EXAM_ITEM_NM, EXAM_ITEM_NO, AREA, EXAM_KEY_WORD_FULL
+		                )T20
+		        GROUP BY AREA, AREA_NM
+		        )T30		
+		UNION ALL
+		SELECT S10.AREA_NM
+		     , MAX(S10.Z_POINT)||'('||SUM(TRANS_GET_POINT)||'/'||SUM(TRANS_POINT)||')' AS VAL
+		     , MAX(S10.Z_POINT) AS Z_POINT
+		     , CASE WHEN ABS(ROUND((MAX(S10.Z_POINT)/3)*100, 1)) >= 100 THEN 100 ELSE ABS(ROUND((MAX(S10.Z_POINT)/3)*100, 1)) END AS Z_PER
+		     , CASE WHEN MAX(S10.Z_POINT) > 0 THEN 'R' ELSE 'L' END AS Z_POINT_DIR
+		     , 99 AS RN
+		FROM (
+		SELECT '전체'                AS AREA_NM
+		    -- , SUM(T30.Z_POINT)      AS Z_POINT
+		     , SUM(TRANS_GET_POINT)  AS TRANS_GET_POINT
+		     , SUM(TRANS_POINT)      AS TRANS_POINT
+		     , RTRIM(TO_CHAR(ROUND(AVG(Z_POINT), 2), 'FM99990D999'), '.') AS Z_POINT
+		  FROM (
+		        SELECT T20.AREA
+		             , T20.AREA_NM
+		             , SUM(TRANS_GET_POINT) AS TRANS_GET_POINT          
+		             , SUM(TRANS_SCORE)     AS TRANS_POINT
+		             , RTRIM(TO_CHAR(ROUND(AVG(Z_POINT), 1), 'FM99990D999'), '.') AS Z_POINT
+		          FROM (
+		                SELECT T10.AREA
+		                     , T10.R_NUMBER
+		                     , T10.EXAM_NO
+		                     , FN_GET_SCLAS_NM('SV006', T10.AREA) AS AREA_NM
+		                     , T10.EXAM_ITEM_CD
+		                     , T10.EXAM_ITEM_NM
+		                     , T10.EXAM_KEY_WORD_FULL
+		                     , T10.EXAM_ITEM_NO
+		                     , MAX(T10.TRANS_SCORE) AS TRANS_SCORE
+		                     , SUM(T10.POINT)       AS ORI_GET_POINT
+		                     , FN_GET_SLICA_TRANS_POINT(T10.EXAM_ITEM_CD, SUM(T10.POINT)) AS TRANS_GET_POINT
+		                     , FN_GET_S_Z_POINT(T10.R_NUMBER, T10.EXAM_NO, T10.EXAM_ITEM_CD, T10.EXAM_ITEM_NO) AS Z_POINT     
+		                     , EXAM_KEY_WORD_FULL
+		                  FROM (
+		                        SELECT T3.EXAM_NO
+		                             , T3.R_NUMBER
+		                             , T1.EXAM_ITEM_CD
+		                             , T1.EXAM_ITEM_NM
+		                             , T1.EXAM_ITEM_NO
+		                             , T1.AREA
+		                             , T1.TRANS_SCORE
+		                             , TOT_SCORE
+		                             , CASE WHEN T2.RMK = 'NOTIN' THEN 0 ELSE T3.POINT END AS POINT
+		                             , T1.EXAM_KEY_WORD_FULL
+		                          FROM TN_CM_EXAM_ITEM_CD T1
+		                         INNER JOIN TN_CM_EXAM_ITEM_CD_DTLS T2
+		                            ON T1.EXAM_ITEM_CD = T2.EXAM_ITEM_CD
+		                           AND T1.EXAM_ITEM_NO = T2.EXAM_ITEM_NO
+		                         INNER JOIN TN_SV_EXAM_RESULT T3
+		                            ON T2.EXAM_ITEM_CD = T3.EXAM_ITEM_CD
+		                           AND T2.EXAM_ITEM_NO = T3.EXAM_ITEM_NO
+		                           AND T2.EXAM_ITEM_CD_DTLS = T3.EXAM_ITEM_CD_DTLS
+		                         WHERE EXAM_NO = #{EXAM_NO, jdbcType=VARCHAR}
+		                           AND T1.AREA IS NOT NULL
+		                       )T10
+		                  GROUP BY R_NUMBER, EXAM_NO, EXAM_ITEM_CD, EXAM_ITEM_NM, EXAM_ITEM_NO, AREA, EXAM_KEY_WORD_FULL
+		                )T20
+		        GROUP BY AREA, AREA_NM
+		        )T30	
+		    )S10
+		    GROUP BY AREA_NM	
+		)
+		ORDER BY RN
+	</select>
+     
+	<select id="getTrgterSExamGrpM" resultType="java.util.Map">
+	    /*
+			query id : alExam.web.sv.TrgterExamSReport.getTrgterSExamGrpM
+			description : SLICA 검사 결과지 기억영역 그래프
+		*/
+	    SELECT EXAM_ITEM_CD
+			 , T20.DIV_MEMORY
+		     , T20.EXAM_KEY_WORD_DIV ||'-'||T20.EXAM_KEY_WORD_SHORT AS EXAM_KEY_WORD
+		     , T20.EXAM_KEY_WORD_SHORT
+		     , T20.Z_POINT||'('||TRANS_GET_POINT||'/'||TRANS_POINT||')' AS VAL
+		     , T20.Z_POINT
+		     , CASE WHEN ABS(ROUND((Z_POINT/3)*100, 1)) >= 100 THEN 100 ELSE ABS(ROUND((Z_POINT/3)*100, 1)) END AS Z_PER
+		     , CASE WHEN Z_POINT > 0 THEN 'R' ELSE 'L' END AS Z_POINT_DIR
+		     , DIV_MEMORY
+		     , FN_GET_SCLAS_NM('SV012', DIV_MEMORY) AS DIV_MEMORY_NM
+		  FROM (
+		        SELECT EXAM_ITEM_CD
+		             , T10.DIV_MEMORY
+		             , T10.EXAM_KEY_WORD_DIV
+		             , T10.EXAM_KEY_WORD_SHORT
+		             , MAX(T10.TRANS_SCORE) AS TRANS_POINT
+		             , SUM(T10.POINT)       AS ORI_GET_POINT
+		             , FN_GET_SLICA_TRANS_POINT(T10.EXAM_ITEM_CD, SUM(T10.POINT)) AS TRANS_GET_POINT
+		             , FN_GET_S_Z_POINT(T10.R_NUMBER, T10.EXAM_NO, T10.EXAM_ITEM_CD, T10.EXAM_ITEM_NO) AS Z_POINT     
+		          FROM (
+		                SELECT T3.EXAM_NO
+		                     , T3.R_NUMBER
+		                     , T1.EXAM_ITEM_CD
+		                     , T1.EXAM_ITEM_NO
+		                     , T1.EXAM_KEY_WORD_DIV
+		                     , T1.EXAM_KEY_WORD_SHORT                         
+		                     , T1.TRANS_SCORE
+		                     , TOT_SCORE
+		                     , T3.POINT
+		                     , T1.DIV_MEMORY
+		                  FROM TN_CM_EXAM_ITEM_CD T1
+		                 INNER JOIN TN_CM_EXAM_ITEM_CD_DTLS T2
+		                    ON T1.EXAM_ITEM_CD = T2.EXAM_ITEM_CD
+		                   AND T1.EXAM_ITEM_NO = T2.EXAM_ITEM_NO
+		                 INNER JOIN TN_SV_EXAM_RESULT T3
+		                    ON T2.EXAM_ITEM_CD = T3.EXAM_ITEM_CD
+		                   AND T2.EXAM_ITEM_NO = T3.EXAM_ITEM_NO
+		                   AND T2.EXAM_ITEM_CD_DTLS = T3.EXAM_ITEM_CD_DTLS
+		                 WHERE EXAM_NO = #{EXAM_NO}
+		                   AND T1.DIV_MEMORY IS NOT NULL
+		               )T10
+		            GROUP BY R_NUMBER, EXAM_NO, EXAM_ITEM_CD, EXAM_ITEM_NO, DIV_MEMORY, EXAM_KEY_WORD_DIV, EXAM_KEY_WORD_SHORT
+		    )T20
+		ORDER BY EXAM_ITEM_CD
+	</select>
+	<select id="setTrgterSExamReportDtls" resultType="java.util.Map">
+	    /*
+			query id : alExam.web.sv.TrgterExamSReport.getTrgterSExamGrpM
+			description : SLICA 세부검사결과표
+		*/
+		SELECT AREA_NM
+            ,EXAM_ITEM_CD
+			     , AREA_DTLS_NM
+			     , EXAM_KEY_WORD_SHORT ||' ('||TRANS_SCORE||')' AS EXAM_KEY_WORD
+			     , RMK
+			     , ORI_GET_POINT
+			     , ORI_GET_DTLS_POINT
+			     , RTRIM(TO_CHAR(Z_POINT, 'FM9990D99'), '.') AS Z_POINT
+			     , TRANS_GET_POINT
+			  FROM (
+			        SELECT FN_GET_SCLAS_NM('SV006', T10.AREA) AS AREA_NM
+			             , FN_GET_SCLAS_NM('SV013', T10.AREA_DTLS) AS AREA_DTLS_NM
+			             , T10.EXAM_KEY_WORD_SHORT
+			             , MAX(T10.TRANS_SCORE) AS TRANS_SCORE
+			             , RMK     
+			             , SUM(T10.POINT)       AS ORI_GET_POINT
+			             , FN_GET_SLICA_DTLS_POINT(T10.EXAM_NO, T10.EXAM_ITEM_CD, T10.EXAM_ITEM_NO) AS ORI_GET_DTLS_POINT     
+			             , FN_GET_S_Z_POINT(T10.R_NUMBER, T10.EXAM_NO, T10.EXAM_ITEM_CD, T10.EXAM_ITEM_NO) AS Z_POINT
+			             , FN_GET_SLICA_TRANS_POINT(T10.EXAM_ITEM_CD, SUM(T10.POINT)) AS TRANS_GET_POINT     
+			             , R_NUMBER
+			             , EXAM_NO
+			             , EXAM_ITEM_CD
+			             , EXAM_ITEM_NO
+			          FROM (
+			                SELECT T3.EXAM_NO
+			                     , T3.R_NUMBER
+			                     , T1.EXAM_ITEM_CD
+			                     , T1.EXAM_ITEM_NM
+			                     , T1.EXAM_ITEM_NO
+			                     , T1.AREA
+			                     , T1.AREA_DTLS
+			                     , T1.TRANS_SCORE
+			                     , T3.POINT
+			                     , T1.EXAM_KEY_WORD_SHORT
+			                     , T1.RMK
+			                     , T1.AREA_ORD
+			                  FROM TN_CM_EXAM_ITEM_CD T1
+			                 INNER JOIN TN_CM_EXAM_ITEM_CD_DTLS T2
+			                    ON T1.EXAM_ITEM_CD = T2.EXAM_ITEM_CD
+			                   AND T1.EXAM_ITEM_NO = T2.EXAM_ITEM_NO
+			                 INNER JOIN TN_SV_EXAM_RESULT T3
+			                    ON T2.EXAM_ITEM_CD = T3.EXAM_ITEM_CD
+			                   AND T2.EXAM_ITEM_NO = T3.EXAM_ITEM_NO
+			                   AND T2.EXAM_ITEM_CD_DTLS = T3.EXAM_ITEM_CD_DTLS
+			                 WHERE EXAM_NO = #{EXAM_NO}
+			                   AND T1.AREA IS NOT NULL
+			               )T10
+			          GROUP BY R_NUMBER, EXAM_NO, AREA, AREA_DTLS, EXAM_ITEM_CD, EXAM_ITEM_NO, EXAM_ITEM_NM, EXAM_KEY_WORD_SHORT, AREA_ORD, RMK
+			          ORDER BY AREA, AREA_ORD	 
+			        )
+	</select>
+	
+	
+	<select id="setTrgterSExamReportRec" resultType="java.util.Map">
+		/*
+			query id : alExam.web.sv.TrgterExamSReport.setTrgterSExamReportRec
+			description : SLICA 누적검사결과표
+		*/
+		SELECT S10.AREA
+		     , S10.AREA_NM
+		     , S10.EXAM_KEY_WORD_SHORT ||' ('||TOT_SCORE||')' AS EXAM_KEY_WORD
+		     , S10.RMK 
+		     , to_char(to_date(S10.EXAM_CMP_DATE_1, 'YYYYMMDD'), 'YYYY-MM-DD') as EXAM_CMP_DATE_1
+		     , S10.POINT_1 ||' ('||RTRIM(TO_CHAR(Z_POINT_1, 'FM9990D99'), '.')||')' AS POINT_1
+		     , to_char(to_date(S10.EXAM_CMP_DATE_2, 'YYYYMMDD'), 'YYYY-MM-DD') as EXAM_CMP_DATE_2
+		     , S10.POINT_2 ||' ('||RTRIM(TO_CHAR(Z_POINT_2, 'FM9990D99'), '.')||')' AS POINT_2
+		     , to_char(to_date(S10.EXAM_CMP_DATE_3, 'YYYYMMDD'), 'YYYY-MM-DD') as EXAM_CMP_DATE_3
+		     , S10.POINT_3 ||' ('||RTRIM(TO_CHAR(Z_POINT_3, 'FM9990D99'), '.')||')' AS POINT_3     
+		  FROM (
+		        SELECT T30.R_NUMBER
+		             , T30.AREA
+		             , FN_GET_SCLAS_NM('SV006', T30.AREA) AS AREA_NM
+		             , T30.AREA_ORD
+		             , T30.EXAM_KEY_WORD_SHORT
+		             , T30.RMK
+		             , T30.TOT_SCORE
+		             , T30.EXAM_NO_1
+		             , T30.EXAM_CMP_DATE_1
+		             , T30.POINT_1
+		             , FN_GET_S_Z_POINT(T30.R_NUMBER, T30.EXAM_NO_1, T30.EXAM_ITEM_CD, T30.EXAM_ITEM_NO) AS Z_POINT_1     
+		             , T30.EXAM_NO_2
+		             , T30.EXAM_CMP_DATE_2
+		             , T30.POINT_2
+		             , FN_GET_S_Z_POINT(T30.R_NUMBER, T30.EXAM_NO_2, T30.EXAM_ITEM_CD, T30.EXAM_ITEM_NO) AS Z_POINT_2     
+		             , T30.EXAM_NO_3
+		             , T30.EXAM_CMP_DATE_3
+		             , T30.POINT_3   
+		             , FN_GET_S_Z_POINT(T30.R_NUMBER, T30.EXAM_NO_3, T30.EXAM_ITEM_CD, T30.EXAM_ITEM_NO) AS Z_POINT_3     
+		        FROM (
+		            SELECT R_NUMBER
+		                 , AREA
+		                 , FN_GET_SCLAS_NM('SV006', AREA) AS AREA_NM
+		                 , EXAM_ITEM_CD
+		                 , EXAM_ITEM_NO
+		                 , EXAM_ITEM_NM
+		                 , EXAM_KEY_WORD_SHORT
+		                 , AREA_ORD
+		                 , RMK
+		                 , MAX(TOT_SCORE) AS TOT_SCORE
+		                 , MAX(EXAM_NO_1) AS EXAM_NO_1
+		                 , MAX(EXAM_CMP_DATE_1) AS EXAM_CMP_DATE_1
+		                 , SUM(POINT_1) AS POINT_1
+		                 , MAX(EXAM_NO_2) AS EXAM_NO_2
+		                 , MAX(EXAM_CMP_DATE_2) AS EXAM_CMP_DATE_2
+		                 , SUM(POINT_2) AS POINT_2
+		                 , MAX(EXAM_NO_3) AS EXAM_NO_3
+		                 , MAX(EXAM_CMP_DATE_3) AS EXAM_CMP_DATE_3
+		                 , SUM(POINT_3) AS POINT_3    
+		              FROM (
+		                    SELECT T10.R_NUMBER
+		                         , T10.EXAM_ITEM_CD
+		                         , T10.EXAM_ITEM_NM
+		                         , T10.EXAM_ITEM_NO
+		                         , T10.AREA
+		                         , T10.EXAM_KEY_WORD_SHORT
+		                         , T10.TOT_SCORE
+		                         , T10.RMK
+		                         , T10.AREA_ORD 
+		                         , T10.EXAM_NO_1
+		                         , T10.EXAM_CMP_DATE_1
+		                         , T10.POINT_1
+		                         , T10.EXAM_NO_2     
+		                         , T10.EXAM_CMP_DATE_2     
+		                         , T10.POINT_2
+		                         , T10.EXAM_NO_3     
+		                         , T10.EXAM_CMP_DATE_3     
+		                         , T10.POINT_3     
+		                      FROM (
+		                            SELECT T3.R_NUMBER
+		                                 , T1.EXAM_ITEM_CD
+		                                 , T1.EXAM_ITEM_NM
+		                                 , T1.EXAM_ITEM_NO
+		                                 , T1.AREA
+		                                 , T1.AREA_DTLS
+		                                 , T1.TOT_SCORE
+		                                 , T1.EXAM_KEY_WORD_SHORT
+		                                 , T1.RMK
+		                                 , T1.AREA_ORD
+		                                 , T3.EXAM_NO AS EXAM_NO_1
+		                                 , T3.EXAM_CMP_DATE AS EXAM_CMP_DATE_1         
+		                                 , S1.POINT AS POINT_1
+		                                 , T4.EXAM_NO AS EXAM_NO_2             
+		                                 , T4.EXAM_CMP_DATE AS EXAM_CMP_DATE_2
+		                                 , S2.POINT AS POINT_2
+		                                 , T5.EXAM_NO AS EXAM_NO_3             
+		                                 , T5.EXAM_CMP_DATE AS EXAM_CMP_DATE_3
+		                                 , S3.POINT AS POINT_3             
+		                              FROM TN_CM_EXAM_ITEM_CD T1
+		                             INNER JOIN TN_CM_EXAM_ITEM_CD_DTLS T2
+		                                ON T1.EXAM_ITEM_CD = T2.EXAM_ITEM_CD
+		                               AND T1.EXAM_ITEM_NO = T2.EXAM_ITEM_NO
+		                             INNER JOIN TN_SV_EXAM_REQ T3  
+		                                ON T3.EXAM_NO = #{EXAM_NO}
+		                             INNER JOIN  (SELECT *
+		                                                 FROM TN_SV_EXAM_RESULT
+		                                              )S1  
+		                                ON T2.EXAM_ITEM_CD = S1.EXAM_ITEM_CD
+		                               AND T2.EXAM_ITEM_NO = S1.EXAM_ITEM_NO
+		                               AND T2.EXAM_ITEM_CD_DTLS = S1.EXAM_ITEM_CD_DTLS
+		                               AND T3.EXAM_NO = S1.EXAM_NO
+		                               AND T3.R_NUMBER = S1.R_NUMBER
+		                              LEFT OUTER JOIN TN_SV_EXAM_REQ T4  
+		                                ON T4.EXAM_SN = #{EXAM_SN} -1
+		                               AND T4.EXAM_DIV = 'S'
+                                   AND T4.EXAM_DIV = 'S'
+		                              LEFT OUTER JOIN (SELECT *
+		                                                 FROM TN_SV_EXAM_RESULT
+		                                              )S2 
+		                                ON T2.EXAM_ITEM_CD = S2.EXAM_ITEM_CD
+		                               AND T2.EXAM_ITEM_NO = S2.EXAM_ITEM_NO
+		                               AND T2.EXAM_ITEM_CD_DTLS = S2.EXAM_ITEM_CD_DTLS
+		                               AND T4.EXAM_NO  = S2.EXAM_NO
+		                               AND T4.R_NUMBER = S2.R_NUMBER  
+		                              LEFT OUTER JOIN TN_SV_EXAM_REQ T5  
+		                                ON T5.EXAM_SN = #{EXAM_SN} -2
+		                               AND T5.EXAM_DIV = 'S'
+		                              LEFT OUTER JOIN (SELECT *
+		                                                 FROM TN_SV_EXAM_RESULT
+		                                              )S3  
+		                                ON T2.EXAM_ITEM_CD = S3.EXAM_ITEM_CD
+		                               AND T2.EXAM_ITEM_NO = S3.EXAM_ITEM_NO
+		                               AND T2.EXAM_ITEM_CD_DTLS = S3.EXAM_ITEM_CD_DTLS
+		                               AND T5.EXAM_NO  = S3.EXAM_NO
+		                               AND T5.R_NUMBER = S3.R_NUMBER 
+		                             WHERE 1=1
+		                               AND T3.R_NUMBER = #{R_NUMBER}
+		                               AND T1.AREA IS NOT NULL
+		                            )T10
+		                    )T20
+		             GROUP BY R_NUMBER
+		                    , AREA
+		                    , EXAM_ITEM_CD
+		                    , EXAM_ITEM_NO
+		                    , EXAM_ITEM_NM
+		                    , EXAM_KEY_WORD_SHORT
+		                    , TOT_SCORE
+		                    , AREA_ORD
+		                    , RMK
+		            )T30
+		    )S10
+		ORDER BY  S10.AREA, S10.AREA_ORD
+	</select>
+	
+	<select id="getTrgterSExamrsLiteracy" resultType="java.util.Map">
+	       /*
+	       	query id : alExam.web.sv.TrgterExamSReport.getTrgterSExamrsLiteracy
+	       	description : 비문해 판정 조회
+	       */
+			SELECT FN_GET_SCLAS_NM('SV010', IN_WRITE) AS IN_WRITE
+				     , FN_GET_SCLAS_NM('SV010', IN_READ)  AS IN_READ
+				     , FN_GET_SCLAS_NM('SV010', PA_WRITE) AS PA_WRITE
+				     , FN_GET_SCLAS_NM('SV010', PA_READ)  AS PA_READ
+				     , FN_GET_SCLAS_NM('SV011', DIV_YN)   AS DIV_YN
+				  FROM (
+				        SELECT MAX(IN_WRITE) AS IN_WRITE
+				             , MAX(IN_READ)  AS IN_READ
+				             , MAX(PA_WRITE) AS PA_WRITE
+				             , MAX(PA_READ)  AS PA_READ
+				             , CASE WHEN MAX(IN_WRITE) = 3 AND MAX(IN_READ) = 3 THEN '01'
+				                    WHEN MAX(PA_WRITE) = 3 AND MAX(PA_READ) = 3 THEN '01'
+				                    ELSE '02'
+				                END AS DIV_YN 
+				          FROM (
+				                SELECT EXAM_NO
+				                     , R_NUMBER
+				                     , EXAM_ITEM_CD_DTLS
+				                     , DECODE(EXAM_ITEM_CD_DTLS, '1101', POINT) AS IN_WRITE
+				                     , DECODE(EXAM_ITEM_CD_DTLS, '1102', POINT) AS IN_READ
+				                     , DECODE(EXAM_ITEM_CD_DTLS, '1103', POINT) AS PA_WRITE
+				                     , DECODE(EXAM_ITEM_CD_DTLS, '1104', POINT) AS PA_READ
+				                  FROM (
+				                        SELECT T3.EXAM_NO
+				                             , T3.R_NUMBER
+				                             , T1.EXAM_ITEM_CD
+				                             , T1.EXAM_ITEM_NM
+				                             , T1.EXAM_ITEM_NO
+				                             , T3.POINT
+				                             , T2.EXAM_ITEM_CD_DTLS
+				                             , T2.EXAM_ITEM_CD_DTLS_NM
+				                          FROM TN_CM_EXAM_ITEM_CD T1
+				                         INNER JOIN TN_CM_EXAM_ITEM_CD_DTLS T2
+				                            ON T1.EXAM_ITEM_CD = T2.EXAM_ITEM_CD
+				                           AND T1.EXAM_ITEM_NO = T2.EXAM_ITEM_NO
+				                         INNER JOIN TN_SV_EXAM_RESULT T3
+				                            ON T2.EXAM_ITEM_CD = T3.EXAM_ITEM_CD
+				                           AND T2.EXAM_ITEM_NO = T3.EXAM_ITEM_NO
+				                           AND T2.EXAM_ITEM_CD_DTLS = T3.EXAM_ITEM_CD_DTLS
+				                         WHERE 1=1
+				                           AND T1.EXAM_ITEM_CD = 'S01'
+				                           AND T3.EXAM_NO = #{EXAM_NO, jdbcType=VARCHAR}
+				                    )
+				                )T10
+				          GROUP BY EXAM_NO, R_NUMBER
+				    )
+		</select>     
+</mapper>
