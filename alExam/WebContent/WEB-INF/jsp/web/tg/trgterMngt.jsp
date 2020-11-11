@@ -3,6 +3,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
+<script type="text/javascript" src="jquery.tablesorter.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#tbsort").tablesorter();
+    });
+</script>
+
 <script type="text/javascript">
 
 var modalModRnum;
@@ -144,14 +151,14 @@ function fn_regTrgterInfoForm(){
 		alert("대상자의 교육년수를 입력해주세요.");
  		return;
 	}
-	if(isNullToString($("#trgterInmateName").val()) == ""){
+/* 	if(isNullToString($("#trgterInmateName").val()) == ""){
 		alert("대상자의 동거자명을 입력해주세요.");
  		return;
 	}
 	if(isNullToString($("input[name=trgterInmateYn]:checked").val()) == ""){
 		alert("대상자와 동거자의 동거여부를 선택해 주세요.");
  		return;
-	}
+	} */
 	/* if(isNullToString($("#telNo1").val()) == "" || isNullToString($("#telNo2").val()) == "" || isNullToString($("#telNo3").val()) == ""){
 		alert("대상자의 전화번호를 입력해주세요.");
 		return;
@@ -276,18 +283,18 @@ function fn_modTrgterInfoForm(){
 		alert("대상자의 주로 사용하는 손을 선택해주세요.");
  		return;
 	}
-	if(isNullToString($("#trgterEduYear").val()) == ""){
+/* 	if(isNullToString($("#trgterEduYear").val()) == ""){
 		alert("대상자의 교육년수를 입력해주세요.");
  		return;
-	}
+	} *//* 
 	if(isNullToString($("#trgterInmateName").val()) == ""){
 		alert("대상자의 동거자명을 입력해주세요.");
  		return;
-	}
-	if(isNullToString($("input[name=trgterInmateYn]:checked").val()) == ""){
+	} */
+/* 	if(isNullToString($("input[name=trgterInmateYn]:checked").val()) == ""){
 		alert("대상자와 동거자의 동거여부를 선택해 주세요.");
  		return;
-	}
+	} */
 	/* if(isNullToString($("#telNo1").val()) == "" || isNullToString($("#telNo2").val()) == "" || isNullToString($("#telNo3").val()) == ""){
 		alert("대상자의 전화번호를 입력해주세요.");
 		return;
@@ -445,6 +452,8 @@ function reqExam(){
 			 			,"reqExamDate" 	: $("#reqExamDate").val().replace(/-/gi,"")
 			 			,"insExamId" 	: $("#insExamId").val()
 			 			,"memo" 		: $("#memo").val()
+			 			,"onoff"		: $("#onoff").val()
+			 			,"testcheck"	: $("#testcheck").val()
 			 			
 		 } 
 		 , "method" : "POST"
@@ -554,14 +563,13 @@ function fn_checkAll(){
 	<a href="#" class="schbox_sch"><em class="btn_sch">조회</em></a>
 </div>
 
-
 <section class="mt35">
 	<ul class="title_align">
 		<li><h2>대상자목록</h2></li>
 		<li><a href="#pop_new_input" class="btn_all new btn-layer" onclick="regTrgterInfoPage();" >신규등록</a>
 			<a href="#pop_text_in" class="btn_all test btn-layer" onclick="reqExamPage();">검사의뢰</a></li>
 	</ul>
-	<table class="boardlist topb">
+	<table class="boardlist topb" id="tbsort">
 		<caption>검사결과목록</caption>
 		<colgroup>
 			<col width="5%">

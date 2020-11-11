@@ -53,7 +53,7 @@
 	//대상자정보조회
 	function fn_rsTrgt(data){
 		var rsTrgt = data.rsTrgt;	
-		if(rsTrgt != null || rsTrgt != ''){
+		if(rsTrgt == null || rsTrgt== ''){
 			$("#userNm").text(rsTrgt.USER_NM);
 			$("#rNumber").text(rsTrgt.C_NUMBER);
 			$("#gender").text(rsTrgt.GENDER);
@@ -68,6 +68,22 @@
 			$("#handCd").text(rsTrgt.HAND_CD);
 			$('#textAreaComment').val(rsTrgt.EXAM_OPIN.split('&lt;br/&gt;').join("\r\n"));
 		}
+		else{
+			$("#userNm").text(rsTrgt.USER_NM);
+			$("#rNumber").text(rsTrgt.C_NUMBER);
+			$("#gender").text(rsTrgt.GENDER);
+			$("#birth").text(rsTrgt.BIRTH);
+			$("#orgPart").text(rsTrgt.ORG_PART);
+			$("#examCmpDate").text(rsTrgt.EXAM_CMP_DATE);
+			$("#examSn").text(rsTrgt.EXAM_SN);
+			$("#inmate").text(rsTrgt.INMATE);
+			$("#name").text(rsTrgt.NAME);		
+			$("#orgNm").text(rsTrgt.ORG_NM);
+			$("#eduYear").text(rsTrgt.EDU_YEAR);
+			$("#handCd").text(rsTrgt.HAND_CD);
+			$('#textAreaComment').val(rsTrgt.EXAM_OPIN);
+		}
+		
 	}
 	
 	//비문해판정

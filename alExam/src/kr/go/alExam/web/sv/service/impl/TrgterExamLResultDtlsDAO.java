@@ -50,8 +50,7 @@ public class TrgterExamLResultDtlsDAO extends DMultiEgovAbstractMapper {
 	}
 
 	public List<Map<String, Object>> examItemCdDtlsNm(Map<String, Object> param) throws Exception {
-		List<Map<String, Object>> rsList = selectList("alExam.web.sv.trgterexamlresultdtls.selectexamitemcddtlsnm",
-				param);
+		List<Map<String, Object>> rsList = selectList("alExam.web.sv.trgterexamlresultdtls.selectexamitemcddtlsnm",param);
 		return rsList;
 	}
 

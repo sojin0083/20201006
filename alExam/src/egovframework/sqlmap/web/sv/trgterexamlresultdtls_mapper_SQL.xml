@@ -94,11 +94,13 @@
 	 	  */	
 			SELECT EXAM_ITEM_CD_DTLS_NM 
 			 	 , NVL(EXAM_ANSWR,'1') 		AS EXAM_ANSWR
+			 	 , EXAM_ITEM_CD
+			 	 , EXAM_ITEM_CD_DTLS
+			 	 , EXAM_ITEM_NO
 			   FROM TN_CM_EXAM_ITEM_CD_DTLS
 				WHERE EXAM_ITEM_CD LIKE '%'||#{EXAM_DIV	,	jdbcType=VARCHAR} ||'%'
-			      AND EXAM_ITEM_CD_DTLS_NM IS NOT NULL
 			      AND NOT EXAM_ITEM_CD IN('L01','S01')
-			     ORDER BY EXAM_ITEM_CD
+			    ORDER BY EXAM_ITEM_CD, EXAM_ITEM_CD_DTLS
 	</select>
 	
 	<select id="selectexamitemcddtlspoint" resultType="java.util.Map">
@@ -268,6 +270,8 @@
 			                 AND  EXAM_DIV 	  =#{EXAM_DIV		,	jdbcType=VARCHAR}
 			                 AND EXAM_SN	  =#{EXAM_SN		,	jdbcType=VARCHAR}-1),'0')	 		AS PREV_POINT   
 			     </if>           
+			     , T2.ONOFF																			  AS ONOFF
+			     , T2.TESTCHECK																		  AS TESTCHECK
 			 FROM TN_CM_TRGTER_INFO T1
 			   INNER JOIN TN_SV_EXAM_REQ T2
 			      ON T1.R_NUMBER = T2.R_NUMBER
@@ -280,4 +284,5 @@
 			    AND T2.EXAM_SN  =#{EXAM_SN			,	jdbcType=VARCHAR}
 			    AND T2.EXAM_DIV	=#{EXAM_DIV			,	jdbcType=VARCHAR}
 	</select>
+		
 </mapper>

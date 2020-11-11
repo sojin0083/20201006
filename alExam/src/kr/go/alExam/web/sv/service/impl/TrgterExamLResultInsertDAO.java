@@ -1,5 +1,6 @@
 package kr.go.alExam.web.sv.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -53,12 +54,14 @@ public class TrgterExamLResultInsertDAO extends DMultiEgovAbstractMapper{
 		String[] point = param.get("POINT").toString().split("\\,",-1);
 		String[] examitemcd = param.get("EXAM_ITEM_CD").toString().split("\\,");
 		String[] examitemcddtls = param.get("EXAM_ITEM_CD_DTLS").toString().split("\\,");
+		String[] examitemno = param.get("EXAM_ITEM_NO").toString().split("\\,");
 		String[] rmk = param.get("RMK").toString().split("\\,",-1);
 		int rsInt = 0;
 		for(int i=0; i<examitemcd.length; i++){
 			param.put("POINT", point[i]);
 			param.put("EXAM_ITEM_CD", examitemcd[i]);
 			param.put("EXAM_ITEM_CD_DTLS", examitemcddtls[i]);
+			param.put("EXAM_ITEM_NO", examitemno[i]);
 			param.put("RMK", rmk[i]);
 			insert("alExam.web.sv.trgterexamlresultinsert.insertPoint", param);
 			rsInt ++; 

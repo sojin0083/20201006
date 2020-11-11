@@ -392,10 +392,10 @@ var s_rmkanswer = new Array();
 						 userTb.append("</tr>");
 						 userTb.append("</thead>");
 						 userTb.append("<tbody>");
-		  for(var j=0;j<10;j++){
+		  for(var j=20;j<30;j++){
 						userTb.append("<tr class='answer"+(count++)+"'>");
-						userTb.append("<td class='bg'>"+(j+1)+"</td>");
-						userTb.append("<td class='bg'><img style='width:100px; height:100px;margin-left:30px;' src='"+ABSOLUTE_URL+"/images/web/question/LICA_"+(j+1)+".png'</td>");
+						userTb.append("<td class='bg'>"+(j-19)+"</td>");
+						userTb.append("<td class='bg'><img style='width:100px; height:100px;margin-left:30px;' src='"+ABSOLUTE_URL+"/images/web/question/LICA_"+(j-19)+".png'</td>");
 						userTb.append("<td><button class='dscore proce btn_all tabtn'></button></td>");
 						userTb.append("<td><button class='ascore proce btn_all tabtn'></button></td>");
 						userTb.append("<td><button class='bscore proce btn_all tabtn'></button></td>");
@@ -439,7 +439,7 @@ var s_rmkanswer = new Array();
 				 for(var j=20;j<30;j++){
 						userTb.append("<tr class='answer"+(count++)+"'>");
 						userTb.append("<td class='bg'>"+(j-19)+"</td>");
-						userTb.append("<td>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
+						userTb.append("<td>"+data.examItemCdDtlsNm[j+10].EXAM_ITEM_CD_DTLS_NM+"</td>");
 						userTb.append("<td><button class='dscore proce btn_all tabtn'></button></td>");
 						userTb.append("<td><button class='bscore proce btn_all tabtn'></button></td>");
 						userTb.append("<input type='hidden' class='answers"+(count-1)+" answer"+(count-1)+"'>");
@@ -452,7 +452,7 @@ var s_rmkanswer = new Array();
 						userTb.append("</table>");
 						userTb.append("</div>");
 						$(".EXAM_L04").append(userTb.toString());
-				}else {
+				}else if(z==2) {
 						userTb.append("<div style='width:25%; margin-left:0.5%;'>");
 						userTb.append("<table class='boardlist'>");
 						userTb.append("<thead>");
@@ -464,7 +464,7 @@ var s_rmkanswer = new Array();
 						userTb.append("</tr>");
 						userTb.append("</thead>");
 						userTb.append("<tbody>");
-			     for(var j=20;j<30;j++){
+			     for(var j=40;j<50;j++){
 						userTb.append("<tr class='answer"+(count++)+"'>");
 						userTb.append("<td><button class='dis dscore proce btn_all tabtn'></button></td>");
 						userTb.append("<td><button class='dis bscore proce btn_all tabtn'></button></td>");
@@ -479,6 +479,33 @@ var s_rmkanswer = new Array();
 						userTb.append("</div>");
 					    $(".EXAM_L04").append(userTb.toString());
 				}
+				else if(z==3) {
+					userTb.append("<div style='width:25%; margin-left:0.5%;'>");
+					userTb.append("<table class='boardlist'>");
+					userTb.append("<thead>");
+					userTb.append("<tr>");
+					userTb.append("<th scope='col' class='blb' colspan='2'>시행"+z+"</th>");
+					userTb.append("</tr>");
+					userTb.append("<tr>");
+					userTb.append("<th colspan='2'>점수</th>");
+					userTb.append("</tr>");
+					userTb.append("</thead>");
+					userTb.append("<tbody>");
+		     for(var j=50;j<60;j++){
+					userTb.append("<tr class='answer"+(count++)+"'>");
+					userTb.append("<td><button class='dis dscore proce btn_all tabtn'></button></td>");
+					userTb.append("<td><button class='dis bscore proce btn_all tabtn'></button></td>");
+					userTb.append("<input type='hidden' class='answers"+(count-1)+" answer"+(count-1)+"'>");
+					userTb.append("<input type='hidden' class='answercddtls_"+(count-1)+"'>");
+					userTb.append("<input type='hidden' class='answercd_"+(count-1)+"'>");
+					userTb.append("<input type='hidden' value='' class='totanswer"+(count-1)+"' id=''/>");
+					userTb.append("</tr>");
+			}
+					userTb.append("</tbody>");
+					userTb.append("</table>");
+					userTb.append("</div>");
+				    $(".EXAM_L04").append(userTb.toString());
+			}
 			 }
 		}
  		
@@ -511,9 +538,9 @@ var s_rmkanswer = new Array();
 						userTb.append("</tr>");
 						userTb.append("</thead>");
 						userTb.append("<tbody class='selecttablefive"+z+"'>");
-		for(var j=50;j<57;j++){
+		for(var j=60;j<67;j++){
 						userTb.append("<tr class='answer"+(count++)+"'>");
-						userTb.append("<td class='bg'>"+(j-49)+"</td>");
+						userTb.append("<td class='bg'>"+(j-59)+"</td>");
 						userTb.append("<td>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 						userTb.append("<td><button class='dscore controllbtn"+(count-1)+" proce btn_all tabtn'></button></td>");
 						if(j==50){
@@ -555,7 +582,7 @@ var s_rmkanswer = new Array();
 						userTb.append("</tr>");
 						userTb.append("</thead>");
 						userTb.append("<tbody class='selecttablefive"+z+"'>");
-			for(var j=57;j<64;j++){
+			for(var j=67;j<74;j++){
 				userTb.append("<tr class='answer"+(count++)+"'>");
 						userTb.append("<td>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 						userTb.append("<td><button name='fourcheck' class='dscore controllbtn"+(count-1)+" proce btn_all tabtn'></button></td>");
@@ -599,9 +626,9 @@ var s_rmkanswer = new Array();
 						userTb.append("</tr>");
 						userTb.append("</thead>");
 						userTb.append("<tbody class='selecttablefive"+z+"'>");
-		      for(var j=64;j<71;j++){
+		      for(var j=74;j<81;j++){
 						userTb.append("<tr class='answer"+(count++)+"'>");
-						userTb.append("<td class='bg'>"+(j-56)+"</td>");
+						userTb.append("<td class='bg'>"+(j-73)+"</td>");
 						userTb.append("<td>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 						userTb.append("<td><button name='fourtwocheck' class='dscore controllbtn"+(count-1)+" proce btn_all tabtn'></button></td>");
 						if(j==64){
@@ -642,7 +669,7 @@ var s_rmkanswer = new Array();
 						userTb.append("</tr>");
 						userTb.append("</thead>");
 						userTb.append("<tbody class='selecttablefive"+z+"'>");
-		       for(var j=71;j<78;j++){
+		       for(var j=81;j<88;j++){
 						userTb.append("<tr class='answer"+(count++)+"'>");
 						userTb.append("<td>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 						userTb.append("<td><button name='fourtwocheck' class='dscore controllbtn"+(count-1)+" proce btn_all tabtn'></button></td>");
@@ -688,10 +715,10 @@ var s_rmkanswer = new Array();
 						 userTb.append("</tr>");
 						 userTb.append("</thead>");
 						 userTb.append("<tbody>");
-			for(var j=78;j<81;j++){
-				if(j==78){
+			for(var j=88;j<90;j++){
+				if(j==88){
 						 userTb.append("<tr class='answer"+(count++)+"'>");
-						 userTb.append("<td class='bg'>"+(j-77)+"</td>");
+						 userTb.append("<td class='bg'>"+(j-87)+"</td>");
 						 userTb.append("<td rowspan='3'><img style='width:100px; height:100px;' src='"+ABSOLUTE_URL+"/images/web/question/LICA_5_1.jpg'/></td>");
 						 userTb.append("<td style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 						 userTb.append("<td><input type='text' value='' class='totanswer"+(count-1)+"' disabled='disabled'/></td>");
@@ -701,18 +728,18 @@ var s_rmkanswer = new Array();
 						 userTb.append("<input type='hidden' value='' class='totanswer"+(count-1)+"' id=''/>");
 						 userTb.append("</tr>");
 				}
-			 if(j==79){
+			 if(j==89){
 					 data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM="오답 수(0-50)";
 					 userTb.append("<tr>");
-					 userTb.append("<td class='bg'>"+(j-77)+"</td>");
+					 userTb.append("<td class='bg'>"+(j-87)+"</td>");
 					 userTb.append("<td>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					 userTb.append("<td><input type='text' disabled='disabled' value=''/></td>");
 					 userTb.append("</tr>");
 			 }
-			 if(j==80){
+			 if(j==89){
 					 data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM="수행시간";	
 					 userTb.append("<tr class='answer"+(count++)+"'>");
-					 userTb.append("<td class='bg'>"+(j-77)+"</td>");
+					 userTb.append("<td class='bg'>"+(j-86)+"</td>");
 					 userTb.append("<td style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					 userTb.append("<td><input type='text' value='' maxlength='3' class='succTot"+(count-1)+"' /></td>");
 					 userTb.append("<input type='hidden' value='' class='answers"+(count-1)+" answer"+(count-1)+"'>");
@@ -742,8 +769,8 @@ var s_rmkanswer = new Array();
 					 userTb.append("</tr>");
 					 userTb.append("</thead>");
 					 userTb.append("<tbody>");
-		for(var j=78;j<81;j++){
-		   if(j==78){
+		for(var j=90;j<92;j++){
+		   if(j==90){
 					 userTb.append("<tr class='answer"+(count++)+"'>");
 					 userTb.append("<td rowspan='3'><img style='width:100px; height:100px;' src='"+ABSOLUTE_URL+"/images/web/question/LICA_5_1.jpg'/></td>");
 					 userTb.append("<td style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
@@ -754,14 +781,14 @@ var s_rmkanswer = new Array();
 					 userTb.append("<input type='hidden' class='answercd_"+(count-1)+"'>");
 					 userTb.append("</tr>");
 					}
-		  if(j==79){
+		  if(j==91){
 					 data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM="오답 수(0-50)";
 					 userTb.append("<tr>");
 				     userTb.append("<td style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					 userTb.append("<td><input type='text' disabled='disabled' value=''/></td>");
 					 userTb.append("</tr>");
 			 }
-		  if(j==80){
+		  if(j==91){
 				 	 data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM="수행시간";	
 					 userTb.append("<tr class='answer"+(count++)+"'>");
 					 userTb.append("<td style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
@@ -808,21 +835,21 @@ var s_rmkanswer = new Array();
 					 userTb.append("</tr>");
 					 userTb.append("</thead>");
 					 userTb.append("<tbody class='selecttablesix'>");
-			for(var j=82;j<94;j++){
-				if(j>=85 && j<88){
+			for(var j=92;j<104;j++){
+				if(j>=95 && j<98){
 					title='빼기';
 				}
-				if(j>=88 && j<91){
+				if(j>=98 && j<101){
 					title='곱하기';
 				}
-				if(j>=91){
+				if(j>=101){
 					title='나누기';
 				}
 				     userTb.append("<tr class='answer"+(count++)+"'>");
-				 if(j % 3 == 1){
+				 if(j % 3 == 2){
 				 	 userTb.append("<td class='bg' rowspan='3'>"+title+"</td>");
 				 }
-					 userTb.append("<td style='border-left: 1px solid #dbdbdb;' class='bg'>"+(j-81)+"</td>");
+					 userTb.append("<td style='border-left: 1px solid #dbdbdb;' class='bg'>"+(j-91)+"</td>");
 					 userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					 userTb.append("<td><button class='dscore proce btn_all tabtn controllbtn"+(count-1)+"'></button></td>");
 					 userTb.append("<td><button class='bscore proce btn_all tabtn controllbtn"+(count-1)+"'></button></td>");
@@ -855,7 +882,7 @@ var s_rmkanswer = new Array();
 					 userTb.append("</tr>");
 					 userTb.append("</thead>");
 					 userTb.append("<tbody class='selecttablesixtwo'>");
-			for(var j=82;j<94;j++){
+			for(var j=104;j<116;j++){
 					 userTb.append("<tr class='answer"+(count++)+"'>");
 					 userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					 userTb.append("<td><button class='dscore proce btn_all tabtn controllbtn"+(count-1)+"'></button></td>");
@@ -894,9 +921,9 @@ var s_rmkanswer = new Array();
 					userTb.append("</tr>");
 					userTb.append("</thead>");
 					userTb.append("<tbody>");
-		 for(var j=0;j<20;j++){
+		 for(var j=116;j<136;j++){
 					userTb.append("<tr class='answer"+(count++)+"'>");
-					userTb.append("<td class='bg'>"+(j+1)+"</td>");
+					userTb.append("<td class='bg'>"+(j-115)+"</td>");
 					userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					userTb.append("<td><button class='dscore proce btn_all tabtn'></button></td>");
 					userTb.append("<td><button class='ascore proce btn_all tabtn'></button></td>");
@@ -932,9 +959,9 @@ var s_rmkanswer = new Array();
 					userTb.append("</tr>");
 					userTb.append("</thead>");
 					userTb.append("<tbody>");
-		 for(var j=126;j<136;j++){
+		 for(var j=136;j<146;j++){
 					 userTb.append("<tr class='answer"+(count++)+"'>");
-					 userTb.append("<td>"+(j-125)+"</td>");
+					 userTb.append("<td>"+(j-135)+"</td>");
 					 userTb.append("<td>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					 userTb.append("<td><button class='dscore proce btn_all tabtn'></button></td>");
 					 userTb.append("<td><button class='bscore proce btn_all tabtn'></button></td>");
@@ -967,7 +994,7 @@ var s_rmkanswer = new Array();
 					userTb.append("</tr>");
 					userTb.append("</thead>");
 					userTb.append("<tbody class='selecttableten'>");
-		 for(var j=136;j<146;j++){
+		 for(var j=146;j<156;j++){
 					 userTb.append("<tr class='answer"+(count++)+"'>");
 					 userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 			 if(data.examItemCdDtlsNm[j].EXAM_ANSWR=="TP"){
@@ -1002,7 +1029,7 @@ var s_rmkanswer = new Array();
 					 userTb.append("</tr>");
 					 userTb.append("</thead>");
 					 userTb.append("<tbody class='selecttableten'>");
-		for(var j=146;j<156;j++){
+		for(var j=156;j<166;j++){
 					 userTb.append("<tr class='answer"+(count++)+"'>");
 				     userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 			 if(data.examItemCdDtlsNm[j].EXAM_ANSWR=="TP"){
@@ -1043,9 +1070,9 @@ var s_rmkanswer = new Array();
 					userTb.append("</tr>");
 					userTb.append("</thead>");
 					userTb.append("<tbody>");
-		 for(var j=156;j<166;j++){
+		 for(var j=166;j<176;j++){
 					userTb.append("<tr class='answer"+(count++)+"'>");
-					userTb.append("<td class='bg'>"+(j-155)+"</td>");
+					userTb.append("<td class='bg'>"+(j-165)+"</td>");
 					userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					userTb.append("<td><button class='dscore proce btn_all tabtn'></button></td>");
 					userTb.append("<td><button class='bscore proce btn_all tabtn'></button></td>");
@@ -1080,9 +1107,9 @@ var s_rmkanswer = new Array();
 					userTb.append("</tr>");
 					userTb.append("</thead>");
 					userTb.append("<tbody class='selecttableeleven'>");
-		 for(var j=166;j<176;j++){
+		 for(var j=176;j<186;j++){
 					 userTb.append("<tr class='answer"+(count++)+"'>");
-					 userTb.append("<td class='bg'>"+(j-165)+"</td>");
+					 userTb.append("<td class='bg'>"+(j-175)+"</td>");
 					 userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 			 if(data.examItemCdDtlsNm[j].EXAM_ANSWR=="TP"){
 					 userTb.append("<td class='focus_bg' value='1'><button class='yesbtn"+j+" proce btn_all tabtn'></button></td>");
@@ -1118,7 +1145,7 @@ var s_rmkanswer = new Array();
 					 userTb.append("</tr>");
 					 userTb.append("</thead>");
 					 userTb.append("<tbody class='selecttableeleven'>");
-		for(var j=176;j<186;j++){
+		for(var j=186;j<196;j++){
 				 	 userTb.append("<tr class='answer"+(count++)+"'>");
 					 userTb.append("<td class='bg'>"+(j-175)+"</td>");
 			    	 userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
@@ -1160,9 +1187,9 @@ var s_rmkanswer = new Array();
 					userTb.append("</tr>");
 					userTb.append("</thead>");
 					userTb.append("<tbody>");
-		 for(var j=186;j<190;j++){
+		 for(var j=196;j<200;j++){
 					 userTb.append("<tr class='answer"+(count++)+"'>");
-					 userTb.append("<td class='bg'>"+(j-185)+"</td>");
+					 userTb.append("<td class='bg'>"+(j-195)+"</td>");
 				     userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					 userTb.append("<td><input type='text' value='' class='totanswer"+(count-1)+"'/></td>");
 					 userTb.append("<input type='hidden' class='answercddtls_"+(count-1)+"'>");
@@ -1197,9 +1224,9 @@ var s_rmkanswer = new Array();
 					userTb.append("<th scope='col' colspan='2'>점수</th>");
 					userTb.append("</thead>");
 					userTb.append("<tbody>");
-		for(var j=190;j<205;j++){	
+		for(var j=200;j<215;j++){	
 					userTb.append("<tr class='answer"+(count++)+"'>");
-				    userTb.append("<td class='bg' style='border-left: 1px solid #dbdbdb;'>"+(j-189)+"</td>");
+				    userTb.append("<td class='bg' style='border-left: 1px solid #dbdbdb;'>"+(j-199)+"</td>");
 					userTb.append("<td class='bg' style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					userTb.append("<td><button name='thirteenonecheck' class='dscore proce btn_all tabtn'></button></td>");
 					userTb.append("<td><button name='thirteenonecheck' class='bscore proce btn_all tabtn'></button></td>");
@@ -1231,9 +1258,9 @@ var s_rmkanswer = new Array();
 					userTb.append("<th scope='col' colspan='2'>점수</th>");
 					userTb.append("</thead>");
 					userTb.append("<tbody>");
-		for(var j=190;j<205;j++){	
+		for(var j=215;j<230;j++){	
 					userTb.append("<tr class='answer"+(count++)+"'>");
-					userTb.append("<td class='bg' style='border-left: 1px solid #dbdbdb;'>"+(j-189)+"</td>");
+					userTb.append("<td class='bg' style='border-left: 1px solid #dbdbdb;'>"+(j-214)+"</td>");
 			  		userTb.append("<td class='bg' style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					userTb.append("<td><button name='thirteentwocheck' class='dscore proce btn_all tabtn'></button></td>");
 					userTb.append("<td><button name='thirteentwocheck' class='bscore proce btn_all tabtn'></button></td>");
@@ -1375,6 +1402,7 @@ var s_rmkanswer = new Array();
 		var scoretot5=0;
 		var scoretot6=0;
 		if(data.userExamInfo.length!=0){
+			console.log(data.userExamInfo);
 			$(".userInfo1").text(data.userExamInfo[0].REQ_CD);
 			$(".userInfo2").text(data.userExamInfo[0].C_NUMBER);
 			$(".userInfo3").text(data.userExamInfo[0].EXAM_REQ_DATE);
@@ -1383,6 +1411,8 @@ var s_rmkanswer = new Array();
 			$(".userInfo6").text(data.userExamInfo[0].REQ_INS_NM+"("+data.userExamInfo[0].REQ_PART+")");
 			$(".userInfo7").text(data.userExamInfo[0].REQ_NM);
 			$(".userInfo8").text(data.userExamInfo[0].MEMO);
+			$(".userInfo13").text(data.userExamInfo[0].ONOFF);
+			$(".userInfo14").text(data.userExamInfo[0].TESTCHECK);
 			$(".cha").text(data.userExamInfo[0].EXAM_SN+"차");
 		if(data.userExamInfo[0].EXAM_SN==1){
 			$(".prev_point").hide();
@@ -2470,9 +2500,9 @@ var s_rmkanswer = new Array();
 					userTb.append("</tr>");
 					userTb.append("</thead>");
 					userTb.append("<tbody class='bb'>");
-				 for(var j=0;j<10;j++){
+				 for(var j=10;j<20;j++){
 					userTb.append("<tr class='s_answer"+(s_count++)+"'>");
-					userTb.append("<td class='bg'>"+j+"</td>");
+					userTb.append("<td class='bg'>"+(j-9)+"</td>");
 					userTb.append("<td>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					userTb.append("<td><button class='dscore s_proce btn_all tabtn'></button></td>");
 					userTb.append("<td><button class='bscore s_proce btn_all tabtn'></button></td>");
@@ -2486,7 +2516,7 @@ var s_rmkanswer = new Array();
 					userTb.append("</table>");
 					userTb.append("</div>");
 					$(".EXAM_S03").append(userTb.toString());
-				}else {
+				}else if(z==2){
 					userTb.append("<div style='width:25%; margin-left:0.5%;'>");
 					userTb.append("<table class='boardlist'>");
 					userTb.append("<thead>");
@@ -2498,7 +2528,34 @@ var s_rmkanswer = new Array();
 					userTb.append("</tr>");
 					userTb.append("</thead>");
 					userTb.append("<tbody>");
-		     for(var j=0;j<10;j++){
+		     for(var j=20;j<30;j++){
+					userTb.append("<tr class='s_answer"+(s_count++)+"'>");
+					userTb.append("<td><button class='dis dscore s_proce btn_all tabtn'></button></td>");
+					userTb.append("<td><button class='dis bscore s_proce btn_all tabtn'></button></td>");
+					userTb.append("<input type='hidden' class='s_answers"+(s_count-1)+" s_answer"+(s_count-1)+"'>");
+					userTb.append("<input type='hidden' class='s_answercddtls_"+(s_count-1)+"'>");
+					userTb.append("<input type='hidden' class='s_answercd_"+(s_count-1)+"'>");
+					userTb.append("<input type='hidden' value='' class='s_totanswer"+(s_count-1)+"'/>");
+					userTb.append("</tr>");
+			}
+					userTb.append("</tbody>");
+					userTb.append("</table>");
+					userTb.append("</div>");
+				    $(".EXAM_S03").append(userTb.toString());
+			}
+			  else {
+					userTb.append("<div style='width:25%; margin-left:0.5%;'>");
+					userTb.append("<table class='boardlist'>");
+					userTb.append("<thead>");
+					userTb.append("<tr>");
+					userTb.append("<th scope='col' class='blb' colspan='2'>시행"+z+"</th>");
+					userTb.append("</tr>");
+					userTb.append("<tr>");
+					userTb.append("<th colspan='2'>점수</th>");
+					userTb.append("</tr>");
+					userTb.append("</thead>");
+					userTb.append("<tbody>");
+		     for(var j=30;j<40;j++){
 					userTb.append("<tr class='s_answer"+(s_count++)+"'>");
 					userTb.append("<td><button class='dis dscore s_proce btn_all tabtn'></button></td>");
 					userTb.append("<td><button class='dis bscore s_proce btn_all tabtn'></button></td>");
@@ -2515,7 +2572,7 @@ var s_rmkanswer = new Array();
 			}
 		 }
 		}	
-			//4.SLINDA숫자 스트룹
+			//3.SLINDA숫자 스트룹
 			if(data.examItemNm[i].EXAM_ITEM_CD=="S04"){
 				for(var z=1;z<3;z++){
 				 var userTb = new StringBuffer();
@@ -2537,10 +2594,10 @@ var s_rmkanswer = new Array();
 					 userTb.append("</tr>");
 					 userTb.append("</thead>");
 					 userTb.append("<tbody>");
-			for(var j=10;j<14;j++){
-				if(j==10){
+			for(var j=40;j<44;j++){
+				if(j==40){
 					 userTb.append("<tr class='s_answer"+(s_count++)+"'>");
-					 userTb.append("<td class='bg'>"+(j-10)+"</td>");
+					 userTb.append("<td class='bg'>"+(j-39)+"</td>");
 					 userTb.append("<td rowspan='3'><img style='width:100px; height:100px;' src='"+ABSOLUTE_URL+"/images/web/question/LICA_5_1.jpg'/></td>");
 					 userTb.append("<td style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					 userTb.append("<td><input type='text' value='' class='s_totanswer"+(s_count-1)+"' disabled='disabled'/></td>");
@@ -2550,18 +2607,18 @@ var s_rmkanswer = new Array();
 					 userTb.append("<input type='hidden' value='' class='s_totanswer"+(s_count-1)+"'/>");
 					 userTb.append("</tr>");
 				}
-			 if(j==12){
+			 if(j==41){
 					 data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM="오답 수(0-50)";
 					 userTb.append("<tr>");
-					 userTb.append("<td class='bg'>"+(j-10)+"</td>");
+					 userTb.append("<td class='bg'>"+(j-39)+"</td>");
 					 userTb.append("<td>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					 userTb.append("<td><input type='text' disabled='disabled' value=''/></td>");
 					 userTb.append("</tr>");
 			 }
-			 if(j==13){
+			 if(j==41){
 					 data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM="수행시간";	
 					 userTb.append("<tr class='s_answer"+(s_count++)+"'>");
-					 userTb.append("<td class='bg'>"+(j-10)+"</td>");
+					 userTb.append("<td class='bg'>"+(j-38)+"</td>");
 					 userTb.append("<td style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					 userTb.append("<td><input type='text' value='' maxlength='3' class='s_succTot"+(s_count-1)+"' id=''/></td>");
 					 userTb.append("<input type='hidden' value='' class='s_answers"+(s_count-1)+" s_answer"+(s_count-1)+"'>");
@@ -2591,8 +2648,8 @@ var s_rmkanswer = new Array();
 					 userTb.append("</tr>");
 					 userTb.append("</thead>");
 					 userTb.append("<tbody>");
-		for(var j=10;j<14;j++){
-		   if(j==10){
+		for(var j=42;j<44;j++){
+		   if(j==42){
 					 userTb.append("<tr class='s_answer"+(s_count++)+"'>");
 					 userTb.append("<td rowspan='3'><img style='width:100px; height:100px;' src='"+ABSOLUTE_URL+"/images/web/question/LICA_5_1.jpg'/></td>");
 					 userTb.append("<td style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
@@ -2603,14 +2660,14 @@ var s_rmkanswer = new Array();
 					 userTb.append("<input type='hidden' class='s_answercd_"+(s_count-1)+"'>");
 					 userTb.append("</tr>");
 					}
-		  if(j==12){
+		  if(j==43){
 					 data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM="오답 수(0-50)";
 					 userTb.append("<tr>");
 				     userTb.append("<td style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					 userTb.append("<td><input type='text' disabled='disabled' value=''/></td>");
 					 userTb.append("</tr>");
 			 }
-		  if(j==13){
+		  if(j==43){
 				 	 data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM="수행시간";	
 					 userTb.append("<tr class='s_answer"+(s_count++)+"'>");
 					 userTb.append("<td style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
@@ -2628,7 +2685,7 @@ var s_rmkanswer = new Array();
 			}
 		}
 	}		
-		//9.SLINDA 막대재인
+		//4.SLINDA 막대재인
 		if(data.examItemNm[i].EXAM_ITEM_CD=="S05"){
 					var userTb = new StringBuffer();
 					userTb.append("<div style='width:49.7%;'>");
@@ -2646,7 +2703,7 @@ var s_rmkanswer = new Array();
 					userTb.append("</tr>");
 					userTb.append("</thead>");
 					userTb.append("<tbody class='s_selecttableten'>");
-		 for(var j=14;j<24;j++){
+		 for(var j=44;j<54;j++){
 					 userTb.append("<tr class='s_answer"+(s_count++)+"'>");
 					 userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 			 if(data.examItemCdDtlsNm[j].EXAM_ANSWR=="TP"){
@@ -2681,7 +2738,7 @@ var s_rmkanswer = new Array();
 					 userTb.append("</tr>");
 					 userTb.append("</thead>");
 					 userTb.append("<tbody class='s_selecttableten'>");
-		for(var j=24;j<34;j++){
+		for(var j=54;j<64;j++){
 					 userTb.append("<tr class='s_answer"+(s_count++)+"'>");
 				     userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 			 if(data.examItemCdDtlsNm[j].EXAM_ANSWR=="TP"){
@@ -2721,9 +2778,9 @@ var s_rmkanswer = new Array();
 					userTb.append("</tr>");
 					userTb.append("</thead>");
 					userTb.append("<tbody>");
-		 for(var j=34;j<44;j++){
+		 for(var j=64;j<74;j++){
 					userTb.append("<tr class='s_answer"+(s_count++)+"'>");
-					userTb.append("<td class='bg'>"+(j-33)+"</td>");
+					userTb.append("<td class='bg'>"+(j-63)+"</td>");
 					userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					userTb.append("<td><button class='dscore s_proce btn_all tabtn'></button></td>");
 					userTb.append("<td><button class='bscore s_proce btn_all tabtn'></button></td>");
@@ -2738,7 +2795,7 @@ var s_rmkanswer = new Array();
 				 	$(".EXAM_S06").append(userTb.toString());
 			}
 		
-		//7.SLINDA 단어회상-재인
+		//6.SLINDA 단어회상-재인
 		if(data.examItemNm[i].EXAM_ITEM_CD=="S07"){
 					var userTb = new StringBuffer();
 					userTb.append("<div style='width:49.7%;'>");
@@ -2758,9 +2815,9 @@ var s_rmkanswer = new Array();
 					userTb.append("</tr>");
 					userTb.append("</thead>");
 					userTb.append("<tbody class='s_selecttableeleven'>");
-		 for(var j=44;j<54;j++){
+		 for(var j=74;j<84;j++){
 					 userTb.append("<tr class='s_answer"+(s_count++)+"'>");
-					 userTb.append("<td class='bg'>"+(j-43)+"</td>");
+					 userTb.append("<td class='bg'>"+(j-73)+"</td>");
 					 userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 			 if(data.examItemCdDtlsNm[j].EXAM_ANSWR=="TP"){
 					 userTb.append("<td class='focus_bg' value='1'><button class='s_yesbtn"+j+" s_proce btn_all tabtn'></button></td>");
@@ -2796,9 +2853,9 @@ var s_rmkanswer = new Array();
 					 userTb.append("</tr>");
 					 userTb.append("</thead>");
 					 userTb.append("<tbody class='s_selecttableeleven'>");
-		for(var j=54;j<64;j++){
+		for(var j=84;j<94;j++){
 				 	 userTb.append("<tr class='s_answer"+(s_count++)+"'>");
-					 userTb.append("<td class='bg'>"+(j-43)+"</td>");
+					 userTb.append("<td class='bg'>"+(j-73)+"</td>");
 			    	 userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 			 if(data.examItemCdDtlsNm[j].EXAM_ANSWR=="TP"){
 					 userTb.append("<td class='focus_bg' value='1'><button class='s_yesbtn"+j+" s_proce btn_all tabtn'></button></td>");
@@ -2820,7 +2877,7 @@ var s_rmkanswer = new Array();
 					 $(".EXAM_S07").append(userTb.toString());
 			}
 
-		//8.SLINDA 단어유창성-동물이름대기
+		//7.SLINDA 단어유창성-동물이름대기
 		if(data.examItemNm[i].EXAM_ITEM_CD=="S08"){
 					var userTb = new StringBuffer();
 					userTb.append("<table class='boardlist'>");
@@ -2838,9 +2895,9 @@ var s_rmkanswer = new Array();
 					userTb.append("</tr>");
 					userTb.append("</thead>");
 					userTb.append("<tbody>");
-		 for(var j=64;j<68;j++){
+		 for(var j=94;j<98;j++){
 					 userTb.append("<tr class='s_answer"+(s_count++)+"'>");
-					 userTb.append("<td class='bg'>"+(j-63)+"</td>");
+					 userTb.append("<td class='bg'>"+(j-93)+"</td>");
 				     userTb.append("<td class='bg'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					 userTb.append("<td><input type='text' value='' class='s_totanswer"+(s_count-1)+"'/></td>");
 					 userTb.append("<input type='hidden' class='s_answercddtls_"+(s_count-1)+"'>");
@@ -2853,7 +2910,7 @@ var s_rmkanswer = new Array();
 				 	 $(".EXAM_S08").append(userTb.toString());
 			}
 		
-		//9.SLINDA 의미 모양-색깔 속성/이름대기
+		//8.SLINDA 의미 모양-색깔 속성/이름대기
 		if(data.examItemNm[i].EXAM_ITEM_CD=="S09"){
 					var userTb = new StringBuffer();
 					userTb.append("<div style='width:49.7%;'>");
@@ -2875,9 +2932,9 @@ var s_rmkanswer = new Array();
 					userTb.append("<th scope='col' colspan='2'>점수</th>");
 					userTb.append("</thead>");
 					userTb.append("<tbody>");
-		for(var j=68;j<83;j++){	
+		for(var j=98;j<113;j++){	
 					userTb.append("<tr class='s_answer"+(s_count++)+"'>");
-				    userTb.append("<td class='bg' style='border-left: 1px solid #dbdbdb;'>"+(j-67)+"</td>");
+				    userTb.append("<td class='bg' style='border-left: 1px solid #dbdbdb;'>"+(j-97)+"</td>");
 					userTb.append("<td class='bg' style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					userTb.append("<td><button name='s_thirteenonecheck' class='dscore s_proce btn_all tabtn'></button></td>");
 					userTb.append("<td><button name='s_thirteenonecheck' class='bscore s_proce btn_all tabtn'></button></td>");
@@ -2909,9 +2966,9 @@ var s_rmkanswer = new Array();
 					userTb.append("<th scope='col' colspan='2'>점수</th>");
 					userTb.append("</thead>");
 					userTb.append("<tbody>");
-		for(var j=83;j<98;j++){	
+		for(var j=113;j<128;j++){	
 					userTb.append("<tr class='s_answer"+(s_count++)+"'>");
-					userTb.append("<td class='bg' style='border-left: 1px solid #dbdbdb;'>"+(j-82)+"</td>");
+					userTb.append("<td class='bg' style='border-left: 1px solid #dbdbdb;'>"+(j-112)+"</td>");
 			  		userTb.append("<td class='bg' style='border-left: 1px solid #dbdbdb;'>"+data.examItemCdDtlsNm[j].EXAM_ITEM_CD_DTLS_NM+"</td>");
 					userTb.append("<td><button name='s_thirteentwocheck' class='dscore s_proce btn_all tabtn'></button></td>");
 					userTb.append("<td><button name='s_thirteentwocheck' class='bscore s_proce btn_all tabtn'></button></td>");
@@ -3373,6 +3430,22 @@ var s_rmkanswer = new Array();
 		</ul>
 	</div>
 </section>	
+
+<section class="mt35">
+<div>
+	<h2>구분</h2>
+	<table class="table_type topb bg_grey">
+		<tr>
+			<th scope="col">온라인/오프라인 검사</th>
+			<td class="userInfo13"></td>
+		</tr>
+		<tr>
+			<th scope="col">진짜/가짜 데이터 구분</th>
+			<td class="userInfo14"></td>
+		</tr>
+	</table>
+</div>
+</section>
 
 <section class="mt35 selectListinfo">
 </section>

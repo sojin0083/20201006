@@ -56,12 +56,14 @@
 			query id : alExam.web.sv.trgterexamlresultdtls.selectexamItemNm
 			description : 검사정보 조회 하기
 	 	  */		
-	       SELECT DISTINCT EXAM_ITEM_NM 
-	           , TRIM(EXAM_ITEM_CD)		AS EXAM_ITEM_CD
-	           , TOT_SCORE
-	        FROM TN_CM_EXAM_ITEM_CD
-			 WHERE EXAM_ITEM_CD LIKE '%'||#{EXAM_DIV	,	jdbcType=VARCHAR}||'%'   
-              ORDER BY EXAM_ITEM_CD
+	     			SELECT EXAM_ITEM_CD_DTLS_NM 
+			 	 , NVL(EXAM_ANSWR,'1') 		AS EXAM_ANSWR
+			 	 , EXAM_ITEM_CD
+			 	 , EXAM_ITEM_NO
+			 	 , EXAM_ITEM_CD_DTLS
+			   FROM TN_CM_EXAM_ITEM_CD_DTLS
+				  WHERE EXAM_ITEM_CD LIKE '%'||#{EXAM_DIV   ,   jdbcType=VARCHAR}||'%'
+			     ORDER BY EXAM_ITEM_CD
 	</select>
 	
 	<select id="selectexamtotscore" resultType="java.util.Map">
@@ -94,11 +96,12 @@
 	 	  */	
 			SELECT EXAM_ITEM_CD_DTLS_NM 
 			 	 , NVL(EXAM_ANSWR,'1') 		AS EXAM_ANSWR
+			 	 , EXAM_ITEM_CD
+			 	 , EXAM_ITEM_NO
+			 	 , EXAM_ITEM_CD_DTLS
 			   FROM TN_CM_EXAM_ITEM_CD_DTLS
 				WHERE EXAM_ITEM_CD LIKE '%'||#{EXAM_DIV	,	jdbcType=VARCHAR} ||'%'
-			      AND EXAM_ITEM_CD_DTLS_NM IS NOT NULL
-			      AND NOT EXAM_ITEM_CD IN('L01','S01')
-			     ORDER BY EXAM_ITEM_CD
+			    ORDER BY EXAM_ITEM_CD
 	</select>
 	
 	<select id="selectexamitemcddtlspoint" resultType="java.util.Map">
@@ -267,6 +270,8 @@
 			     , T4.USER_NM																		  AS REQ_INS_NM
 			     , NVL(T2.MEMO,' ')																	  AS MEMO
 			     , T2.TOT_POINT																		  AS TOT_POINT
+			     , T2.ONOFF																			  AS ONOFF
+			     , T2.TESTCHECK																		  AS TESTCHECK
 			     , (SELECT T2.USER_NM
 			            FROM TN_SV_EXAM_REQ T1
 			            INNER JOIN TN_CM_USER_INFO T2

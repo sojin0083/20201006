@@ -450,8 +450,7 @@
 					return false;
 				}
 				if (confirm("저장하시겠습니까?")) { //사용자 등록 중복 조회
-					cfn
-							.ajax({
+					cfn.ajax({
 								"url" : "/sm/selectUserRegChk.do",
 								"data" : {
 									"USER_NM" : $(".user_nm").val(),

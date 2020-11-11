@@ -83,7 +83,7 @@
 					(	 #{EXAM_NO				,	jdbcType=VARCHAR}
 						,#{R_NUMBER				,	jdbcType=VARCHAR}
 						,#{EXAM_ITEM_CD			,	jdbcType=VARCHAR}
-						,#{EXAM_ITEM_NO			,	jdbcType=VARCHAR}
+						, '1'
 						,#{EXAM_ITEM_CD_DTLS	,	jdbcType=VARCHAR}
 						,#{POINT				,	jdbcType=INTEGER}
 						,SYSDATE

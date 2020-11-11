@@ -7,7 +7,7 @@
 			query id : alExam.web.tg.TrgterInfoMngt.trgterList
 			description : 대상자관리 리스트 조회
 		*/
-		SELECT TO_CHAR(REG_DML_DT, 'YYYY-MM-DD') AS REG_DML_DT
+		SELECT DISTINCT TO_CHAR(REG_DML_DT, 'YYYY-MM-DD') AS REG_DML_DT
 			  ,R_NUMBER
 			  ,C_NUMBER
 			  ,NAME
@@ -20,27 +20,27 @@
 			  ,EXAM_SN
 			  ,PROC
 		FROM (
-			SELECT T1.REG_DML_DT
+			SELECT DISTINCT T1.REG_DML_DT
 				  ,T1.R_NUMBER
 				  ,T1.C_NUMBER
 				  ,T1.NAME
 			      ,T1.GENDER
 				  ,T1.BIRTH
-		       	  ,(select ORG_CD from TN_CM_USER_INFO where USER_ID = T1.REG_DML_ID) AS ORG_CD
+		       	  ,(select DISTINCT ORG_CD from TN_CM_USER_INFO where USER_ID = T1.REG_DML_ID) AS ORG_CD
 				  ,T2.EXAM_DIV
 			      ,T2.EXAM_CMP_DATE
 				  ,T2.EXAM_SN
 				  ,T5.PROC
 			  FROM TN_CM_TRGTER_INFO T1
 			  LEFT OUTER JOIN (
-					SELECT T3.R_NUMBER
+					SELECT DISTINCT T3.R_NUMBER
 						  ,T3.EXAM_DIV
 						  ,T3.LST_DML_ID
 						  ,T3.EXAM_SN
 						  ,T3.EXAM_CMP_DATE
 					  FROM TN_SV_EXAM_REQ T3
 					 INNER JOIN(
-	          			SELECT R_NUMBER
+	          			SELECT DISTINCT R_NUMBER
 							  ,MAX(EXAM_CMP_DATE) EXAM_CMP_DATE
 						  FROM TN_SV_EXAM_REQ
 						 WHERE EXAM_STTUS = '03'
@@ -54,7 +54,7 @@
 				SELECT R_NUMBER
 					 , MIN(PROC) as PROC
 				  FROM (
-						SELECT R_NUMBER
+						SELECT DISTINCT R_NUMBER
 							 , CASE WHEN EXAM_STTUS = '01' then 'Y' else null end as PROC
 						  FROM TN_SV_EXAM_REQ
 			 )
@@ -272,6 +272,8 @@
 					,REG_DML_ID
 					,LST_DML_DT
 					,LST_DML_ID
+					,ONOFF
+					,TESTCHECK
 				)
 			VALUES
 				(
@@ -292,6 +294,8 @@
 					,#{SESS_USER_ID}
 					,SYSDATE
 					,#{SESS_USER_ID}
+					,#{onoff}
+					,#{testcheck}
 				)
 		</foreach>
 	</insert>

@@ -82,12 +82,15 @@
 					</tr>
 					<tr>			
 						<th scope="col">검사요청일</th>
-						<td><input type="text" id="reqExamDate" readonly></td>
+						<td><input type="text" id="reqExamDate" style="width:100%" readonly></td>
 						<th scope="col">검사자</th>
-						<td>
-							<select id="insExamId" style="width:100%">
-							</select>
-						</td>
+						<td><select id="insExamId" style="width:100%"></select></td>
+					</tr>
+					<tr>
+						<th>검사 구분</th>
+						<td><select id="onoff" style="width:100%"><option value="온라인 검사" selected>온라인 검사</option><option value="오프라인 검사">오프라인 검사</option></select></td>
+						<th>데이터</th>
+						<td><select id="testcheck" style="width:100%"><option value="진짜 데이터" selected>진짜 데이터</option><option value="테스트 데이터">테스트 데이터</option></select></td>
 					</tr>
 					<tr>			
 						<th scope="col">메모</th>

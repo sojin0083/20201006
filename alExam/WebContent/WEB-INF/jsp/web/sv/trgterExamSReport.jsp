@@ -31,7 +31,7 @@
 				//대상자정보
 				setTrgterSExamInfo(data.rsInfo);
 				//인지영역 결과표
-				setTrgterSExamArea(data.rsArea)
+				setTrgterSExamArea(data.rsArea);
 				//인지영역그래프
 				setTrgterSExamGrpO(data.grpO);
 				//기억력그래프
@@ -39,9 +39,9 @@
 				//세부검사 결과표
 				setTrgterSExamReportDtls(data.rsDtls);
 				//누적검사결과표
-				setTrgterSExamReportRec(data.rsRec)
+				setTrgterSExamReportRec(data.rsRec);
 				//비문해검사표
-				setTrgterSExamrsLiteracy(data.rsLiteracy)
+				setTrgterSExamrsLiteracy(data.rsLiteracy);
 			 }
 			 , "error" : function(data){
 				alert("통신실패");
@@ -90,7 +90,7 @@
 		str += "</tr>"
 		$("#trgterSExamInfo").append(str);
 		
-		$('#examOpin').val(data.EXAM_OPIN.split('&lt;br/&gt;').join("\r\n"));
+		$('#examOpin').val(data.EXAM_OPIN/* .split('&lt;br/&gt;').join("\r\n") */);
 		
 		$(".grpSN").html(data.EXAM_SN + "차");
 	}
